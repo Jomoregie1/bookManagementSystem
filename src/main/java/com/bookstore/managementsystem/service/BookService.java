@@ -1,9 +1,12 @@
 package com.bookstore.managementsystem.service;
 
-import org.springframework.stereotype.Service;
+import com.bookstore.managementsystem.dto.BookDto;
+import org.springframework.http.ResponseEntity;
 
-@Service
-public class BookService {
+public interface BookService {
+
+
+    ResponseEntity<BookDto> createBook(BookDto book);
 
 
 }

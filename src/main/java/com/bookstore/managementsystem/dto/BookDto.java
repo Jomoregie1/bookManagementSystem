@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookCreationDto {
+public class BookDto {
 
     private String title;
     private long isbn;
