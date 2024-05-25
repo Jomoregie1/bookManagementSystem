@@ -1,6 +1,5 @@
-package com.bookstore.managementsystem.entity;
+package com.bookstore.managementsystem.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,22 +7,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Book {
+public class BookCreationDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
     private String title;
     private long isbn;
     private LocalDate publicationDate;
-
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Author author;
-
 }
