@@ -15,4 +15,6 @@ public interface BookService {
     ResponseEntity<BookDto> getBook(long id);
 
     ResponseEntity<BookDto> updateBook(Long id, BookDto bookDto);
+
+    ResponseEntity<Void>deleteBook(Long id);
  }

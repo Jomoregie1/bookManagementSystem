@@ -121,10 +121,21 @@ class BookControllerTest {
         // Arrange
         when(bookService.updateBook(any(Long.class),any(BookDto.class))).thenReturn(ResponseEntity.status(HttpStatus.OK).body(bookDto));
 
-        // Act
+        // Act & Assert
         mockMvc.perform(put("/books/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(bookDto)))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void testDeleteBook_whenResourceIdProvided_ThenReturnSuccess() throws Exception {
+//        Arrange
+        when(bookService.deleteBook(any(Long.class)))
+                .thenReturn(ResponseEntity.ok().build());
+        // Act & Assert
+        mockMvc.perform(delete("/books/1"))
                 .andExpect(status().isOk());
 
     }

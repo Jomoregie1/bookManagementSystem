@@ -2,6 +2,7 @@ package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.service.BookService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,10 @@ public class BookController {
     @PutMapping("/{id}")
     public ResponseEntity<BookDto> updateBook(@PathVariable("id") Long id, BookDto bookDto) {
         return bookService.updateBook(id, bookDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable("id") Long id) {
+        return bookService.deleteBook(id);
     }
 }
