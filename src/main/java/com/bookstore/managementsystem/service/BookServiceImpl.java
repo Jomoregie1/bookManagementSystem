@@ -24,4 +24,9 @@ public class BookServiceImpl implements BookService{
     public ResponseEntity<BookDto> getBook(long id) {
         return null;
     }
+
+    @Override
+    public ResponseEntity<BookDto> updateBook(Long id, BookDto bookDto) {
+        return null;
+    }
 }

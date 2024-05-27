@@ -13,4 +13,6 @@ public interface BookService {
     ResponseEntity<List<BookDto>> getAllBooks();
 
     ResponseEntity<BookDto> getBook(long id);
-}
+
+    ResponseEntity<BookDto> updateBook(Long id, BookDto bookDto);
+ }

@@ -2,6 +2,7 @@ package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.service.BookService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -92,6 +93,7 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("Test get book by Id.")
     public void testGetBookById_WhenIdEqualToOne_ThenReturnSuccessAndFoundBook() throws Exception {
         //Arrange
         when(bookService.getBook(any(Long.class))).thenReturn(ResponseEntity.status(HttpStatus.FOUND).body(this.bookDto));
@@ -111,6 +113,23 @@ class BookControllerTest {
         assertEquals(bookDto.getPublicationDate(), bookDto1.getPublicationDate());
 
     }
+
+    @Test
+    @DisplayName("Test update book value")
+    public void testUpdateBook_WhenNewBookObjectPassed_ThenReturnSuccess() throws Exception {
+
+        // Arrange
+        when(bookService.updateBook(any(Long.class),any(BookDto.class))).thenReturn(ResponseEntity.status(HttpStatus.OK).body(bookDto));
+
+        // Act
+        mockMvc.perform(put("/books/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(bookDto)))
+                .andExpect(status().isOk());
+
+    }
+
+
 
 
 
