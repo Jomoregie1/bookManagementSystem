@@ -1,13 +1,12 @@
 package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.dto.BookDto;
+import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.service.BookService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +20,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.Assert;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -47,6 +43,7 @@ class BookControllerTest {
                 .isbn(12345678)
                 .title("The best book ever")
                 .publicationDate(LocalDate.of(2010, 10, 10))
+                .price(10)
                 .build();
 
         mapper = JsonMapper.builder()
@@ -130,6 +127,7 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("Test delete books")
     public void testDeleteBook_whenResourceIdProvided_ThenReturnSuccess() throws Exception {
 //        Arrange
         when(bookService.deleteBook(any(Long.class)))
@@ -138,6 +136,43 @@ class BookControllerTest {
         mockMvc.perform(delete("/books/1"))
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    @DisplayName("Test get Book by Author.")
+    public void testGetBookByAuthor_WhenAuthorIdProvided_ThenReturnSuccessAndListOfBooks() throws Exception {
+        // Arrange
+        when(bookService.getBooksByAuthor(any(Long.class)))
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(bookDto,bookDto,bookDto)));
+        // Act & Assert
+        var response = mockMvc.perform(get("/books/author/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+        // Assert
+        String responseValue = response.getResponse().getContentAsString();
+        List<BookDto> values = mapper.readValue(responseValue, new TypeReference<List<BookDto>>() {});
+        assertEquals(values.size(), 3);
+
+    }
+
+    @Test
+    public void testGetBooksWithInAPriceRange_WhenPriceRangeGiven_ThenReturnSuccess() throws Exception {
+        // Arrange
+        when(bookService.getBookWithInPriceRange(any(Double.class), any(Double.class)))
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(bookDto,bookDto)));
+        // Example start and end range.
+        double startOfRange = 7;
+        double endOfRange = 15;
+
+        //Act
+        String formattedUrl = String.format("/books/price-range?startOfRange=%f&endOfRange=%f",startOfRange, endOfRange);
+        var response = mockMvc.perform(get(formattedUrl))
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse();
+
+        // Asset
+        List<BookDto> responseValue = mapper.readValue(response.getContentAsString(), new TypeReference<List<BookDto>>() {});
+        assertEquals(responseValue.size(),2);
     }
 
 

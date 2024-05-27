@@ -16,4 +16,5 @@ public class BookDto {
     private String title;
     private long isbn;
     private LocalDate publicationDate;
+    private double price;
 }

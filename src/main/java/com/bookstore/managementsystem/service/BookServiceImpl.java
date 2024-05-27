@@ -34,4 +34,14 @@ public class BookServiceImpl implements BookService{
     public ResponseEntity<Void> deleteBook(Long id) {
         return null;
     }
+
+    @Override
+    public ResponseEntity<List<BookDto>> getBooksByAuthor(Long id) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange) {
+        return null;
+    }
 }

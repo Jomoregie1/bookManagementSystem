@@ -6,9 +6,7 @@ import java.util.List;
 
 public interface BookService {
 
-
     ResponseEntity<BookDto> createBook(BookDto book);
-
 
     ResponseEntity<List<BookDto>> getAllBooks();
 
@@ -17,4 +15,8 @@ public interface BookService {
     ResponseEntity<BookDto> updateBook(Long id, BookDto bookDto);
 
     ResponseEntity<Void>deleteBook(Long id);
+
+    ResponseEntity<List<BookDto>> getBooksByAuthor(Long id);
+
+    ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange);
  }

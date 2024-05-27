@@ -21,6 +21,7 @@ public class Book {
     private String title;
     private long isbn;
     private LocalDate publicationDate;
+    private double price;
 
     @ManyToOne
     @JoinColumn(name = "author_id")
