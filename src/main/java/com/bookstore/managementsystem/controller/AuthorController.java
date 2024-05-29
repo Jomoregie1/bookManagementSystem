@@ -1,13 +1,48 @@
 package com.bookstore.managementsystem.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.bookstore.managementsystem.dto.AuthorDto;
+import com.bookstore.managementsystem.service.AuthorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
 
+    private final AuthorService authorService;
 
+    @Autowired
+    AuthorController(AuthorService authorService) {
+        this.authorService = authorService;
+    }
+
+    @PostMapping()
+    public ResponseEntity<AuthorDto> createAuthor (@RequestBody AuthorDto authorDto) {
+        return this.authorService.createAuthor(authorDto);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<AuthorDto>> getAuthors() {
+        return this.authorService.getAuthors();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateAuthor(@PathVariable("id") Long id, @RequestBody AuthorDto authorDto) {
+        return this.authorService.updateAuthor(id, authorDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AuthorDto> getAuthorById(@PathVariable("id") Long id) {
+        return this.authorService.getAuthorById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAuthorById(@PathVariable("id") Long id) {
+        return this.authorService.deleteAuthorById(id);
+    }
 
 
 }

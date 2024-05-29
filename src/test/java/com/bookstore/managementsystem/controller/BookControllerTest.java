@@ -1,7 +1,6 @@
 package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.dto.BookDto;
-import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.service.BookService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -156,6 +155,7 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("Test getting a book with a range.")
     public void testGetBooksWithInAPriceRange_WhenPriceRangeGiven_ThenReturnSuccess() throws Exception {
         // Arrange
         when(bookService.getBookWithInPriceRange(any(Double.class), any(Double.class)))
