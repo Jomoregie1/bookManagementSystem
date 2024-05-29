@@ -1,5 +1,6 @@
 package com.bookstore.managementsystem.service;
 
+import com.bookstore.managementsystem.customerrors.BookExistsError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.repo.BookRepo;
@@ -55,7 +56,7 @@ class BookServiceTest {
 
     @Test
     @DisplayName("Test create book in service layer.")
-    public void testCreateBook_WhenNewBookObjectCreated_ReturnCreatedBookObjectAndOkStatus() {
+    public void testCreateBook_WhenNewBookObjectCreated_ReturnCreatedBookObjectAndOkStatus() throws BookExistsError {
         // Arrange
         Mockito.when(mapConvertor.BookDtoToBook(Mockito.any(BookDto.class)))
                 .thenReturn(this.book);

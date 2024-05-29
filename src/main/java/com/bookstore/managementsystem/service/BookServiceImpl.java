@@ -1,5 +1,6 @@
 package com.bookstore.managementsystem.service;
 
+import com.bookstore.managementsystem.customerrors.BookExistsError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.repo.BookRepo;
@@ -26,11 +27,12 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<BookDto> createBook(BookDto book) {
+    public ResponseEntity<BookDto> createBook(BookDto book) throws BookExistsError {
 
         if (bookRepo.existsByIsbn(book.getIsbn())) {
-            throw new IllegalArgumentException("The book you are trying to create has been found in our system.");
+            throw new BookExistsError("The book you are trying to create has been found in our system.");
         }
+
         Book current_book = mapper.BookDtoToBook(book);
         bookRepo.save(current_book);
 

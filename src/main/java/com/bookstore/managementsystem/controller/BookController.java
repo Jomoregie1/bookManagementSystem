@@ -1,5 +1,6 @@
 package com.bookstore.managementsystem.controller;
 
+import com.bookstore.managementsystem.customerrors.BookExistsError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class BookController {
     }
 
     @PostMapping()
-    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto){
+    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) throws BookExistsError {
         return bookService.createBook(bookDto);
     }
 
