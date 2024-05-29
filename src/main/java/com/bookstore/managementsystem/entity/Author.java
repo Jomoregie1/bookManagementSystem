@@ -14,8 +14,10 @@ import java.util.Set;
 @NoArgsConstructor
 public class Author {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "author_name")
     private String name;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
