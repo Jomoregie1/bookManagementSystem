@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.customerrors.BookExistsError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class BookController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<BookDto>> getAllBooks() {
+    public ResponseEntity<List<BookDto>> getAllBooks() throws NotFoundError {
         return bookService.getAllBooks();
     }
 

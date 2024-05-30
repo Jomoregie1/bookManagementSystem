@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.service;
 
 import com.bookstore.managementsystem.customerrors.BookExistsError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.repo.BookRepo;
@@ -90,7 +91,7 @@ class BookServiceTest {
     }
 
     @Test
-    public void testGetAllBooks_ThenReturnAListOfBookDtos() {
+    public void testGetAllBooks_ThenReturnAListOfBookDtos() throws NotFoundError {
         //Arrange
         when(bookRepo.findAll()).thenReturn(List.of(book, book, book));
         when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(bookDto);
@@ -103,7 +104,18 @@ class BookServiceTest {
     }
 
     @Test
-    public void testGetAllBooks
+    public void testGetAllBooks_WhenFindAllReturnsEmptyList_ThenThrowNotFoundError() throws NotFoundError{
+        when(bookRepo.findAll()).thenReturn(List.of());
+        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {
+            bookService.getAllBooks();
+        });
+        assertEquals(thrown.getMessage(), "No Books Found");
+    }
+
+    @Test
+    public void testGetBook_WhenBookIdPassed_ThenReturnBookFound() {
+        when(bookRepo.findById(any(Long.class))).thenReturn(this.book)
+    }
 
 
 }

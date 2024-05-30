@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.service;
 
 import com.bookstore.managementsystem.customerrors.BookExistsError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.repo.BookRepo;
@@ -47,9 +48,10 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<List<BookDto>> getAllBooks() {
+    public ResponseEntity<List<BookDto>> getAllBooks() throws NotFoundError {
         List<Book> books = bookRepo.findAll();
         if (books.isEmpty()) {
+            throw new NotFoundError("No Books Found");
         }
 
         List<BookDto> responseBookDtos = books.stream().map(mapper::bookToBookDto).toList();
