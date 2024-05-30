@@ -5,16 +5,17 @@ import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.repo.BookRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 @Qualifier("BookService")
+@Slf4j
 public class BookServiceImpl implements BookService{
 
     private BookRepo bookRepo;
@@ -28,12 +29,16 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public ResponseEntity<BookDto> createBook(BookDto book) throws BookExistsError {
-
+        String logMessage;
         if (bookRepo.existsByIsbn(book.getIsbn())) {
+            logMessage = String.format("Error: Book with ISBN - %d, already exists.", book.getIsbn());
+            log.error(logMessage);
             throw new BookExistsError("The book you are trying to create has been found in our system.");
         }
 
         Book current_book = mapper.BookDtoToBook(book);
+        logMessage = String.format("Book with ISBN - %d, created.", book.getIsbn());
+        log.info(logMessage);
         bookRepo.save(current_book);
 
         return ResponseEntity.status(HttpStatus.OK).body(book);

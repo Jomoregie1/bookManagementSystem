@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -58,9 +58,9 @@ class BookServiceTest {
     @DisplayName("Test create book in service layer.")
     public void testCreateBook_WhenNewBookObjectCreated_ReturnCreatedBookObjectAndOkStatus() throws BookExistsError {
         // Arrange
-        Mockito.when(mapConvertor.BookDtoToBook(Mockito.any(BookDto.class)))
+        when(mapConvertor.BookDtoToBook(any(BookDto.class)))
                 .thenReturn(this.book);
-        Mockito.when(bookRepo.save(Mockito.any(Book.class)))
+        when(bookRepo.save(any(Book.class)))
                 .thenReturn(book);
 
         //Act
@@ -75,6 +75,20 @@ class BookServiceTest {
     }
 
 
+    @Test
+    public void testCreateBook_WhenBookExistsErrorThrown_ThenTestExceptionThrow() throws BookExistsError {
+        // Arrange
+        when(bookRepo.existsByIsbn(any(Long.class)))
+                .thenReturn(true);
+
+        BookExistsError thrown = assertThrows(BookExistsError.class, () -> {bookService.createBook(bookDto);});
+        assertEquals("The book you are trying to create has been found in our system.", thrown.getMessage());
+
+
+    }
+
+    @Test
+    public void testGetAllBooks_When
 
 
 }
