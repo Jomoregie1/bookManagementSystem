@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Qualifier("BookService")
@@ -46,7 +48,12 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public ResponseEntity<List<BookDto>> getAllBooks() {
-        return null;
+        List<Book> books = bookRepo.findAll();
+        if (books.isEmpty()) {
+        }
+
+        List<BookDto> responseBookDtos = books.stream().map(mapper::bookToBookDto).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(responseBookDtos);
     }
 
     @Override

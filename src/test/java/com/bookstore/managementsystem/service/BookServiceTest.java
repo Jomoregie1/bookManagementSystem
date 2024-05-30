@@ -13,10 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -81,6 +82,7 @@ class BookServiceTest {
         when(bookRepo.existsByIsbn(any(Long.class)))
                 .thenReturn(true);
 
+        //Act & Assert
         BookExistsError thrown = assertThrows(BookExistsError.class, () -> {bookService.createBook(bookDto);});
         assertEquals("The book you are trying to create has been found in our system.", thrown.getMessage());
 
@@ -88,7 +90,20 @@ class BookServiceTest {
     }
 
     @Test
-    public void testGetAllBooks_When
+    public void testGetAllBooks_ThenReturnAListOfBookDtos() {
+        //Arrange
+        when(bookRepo.findAll()).thenReturn(List.of(book, book, book));
+        when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(bookDto);
+        // Act
+        ResponseEntity<List<BookDto>> response = bookService.getAllBooks();
+        //Assert
+        int sizeOfResponse = response.getBody().size();
+        assertEquals(sizeOfResponse, 3);
+
+    }
+
+    @Test
+    public void testGetAllBooks
 
 
 }
