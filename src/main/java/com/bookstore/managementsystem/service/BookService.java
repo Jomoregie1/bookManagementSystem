@@ -12,7 +12,7 @@ public interface BookService {
 
     ResponseEntity<List<BookDto>> getAllBooks() throws NotFoundError;
 
-    ResponseEntity<BookDto> getBook(long id);
+    ResponseEntity<BookDto> getBook(long id) throws NotFoundError;
 
     ResponseEntity<BookDto> updateBook(Long id, BookDto bookDto);
 

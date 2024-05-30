@@ -6,6 +6,7 @@ import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.repo.BookRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
+import org.aspectj.weaver.ast.Not;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,8 +115,26 @@ class BookServiceTest {
     }
 
     @Test
-    public void testGetBook_WhenBookIdPassed_ThenReturnBookFound() {
-        when(bookRepo.findById(any(Long.class))).thenReturn(this.book)
+    public void testGetBook_WhenBookIdPassed_ThenReturnBookFound() throws NotFoundError{
+        when(bookRepo.findById(any(Long.class))).thenReturn(Optional.of(this.book));
+        when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(this.bookDto);
+
+        long testId = 1L;
+        ResponseEntity<BookDto> response = bookService.getBook(testId);
+        int status = response.getStatusCode().value();
+        BookDto testBookDto = response.getBody();
+
+        assertEquals(status,200);
+        assertEquals(testBookDto, this.bookDto);
+
+    }
+
+    @Test
+    public void testGetBook_WhenBookIdNotFound_ThenThrowNotFoundException() throws NotFoundError{
+        when(bookRepo.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        long testId = 1L;
+        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBook(testId);});
     }
 
 

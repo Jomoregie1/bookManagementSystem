@@ -32,7 +32,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookDto> getBook(@PathVariable("id") Long id) {
+    public ResponseEntity<BookDto> getBook(@PathVariable("id") Long id) throws NotFoundError {
         return bookService.getBook(id);
     }
 

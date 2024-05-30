@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,8 +60,14 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<BookDto> getBook(long id) {
-        return null;
+    public ResponseEntity<BookDto> getBook(long id) throws NotFoundError{
+        Optional<Book> bookOptional = bookRepo.findById(id);
+        if (bookOptional.isEmpty()) {
+            throw new NotFoundError("The book with Id:" + id + ",Not Found.");
+        }
+        BookDto responseBook = mapper.bookToBookDto(bookOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body(responseBook);
+
     }
 
     @Override
