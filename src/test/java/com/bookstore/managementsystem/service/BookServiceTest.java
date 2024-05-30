@@ -135,6 +135,13 @@ class BookServiceTest {
 
         long testId = 1L;
         NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBook(testId);});
+        assertEquals(thrown.getMessage(), "The book with Id:1,Not Found.");
+    }
+
+    @Test
+    public void testUpdateBook_WhenUpdatingBook_ThenReturnSucess() {
+        when(bookRepo.existsById(any(Long.class)))
+                .thenReturn(true);
     }
 
 
