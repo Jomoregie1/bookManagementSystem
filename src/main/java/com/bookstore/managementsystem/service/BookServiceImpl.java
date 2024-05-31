@@ -31,6 +31,7 @@ public class BookServiceImpl implements BookService{
         this.mapper = mapConvertor;
     }
 
+// TODO ensure to create author, when book object is created. Make changes to DTO object.
     @Override
     public ResponseEntity<BookDto> createBook(BookDto book) throws BookExistsError {
         String logMessage;
@@ -94,8 +95,15 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<List<BookDto>> getBooksByAuthor(Long id) {
-        return null;
+    public ResponseEntity<List<BookDto>> getBooksByAuthor(Long id) throws NotFoundError {
+        List<Book> bookList = bookRepo.findAllByAuthor(id);
+        if (bookList.isEmpty()) {
+            throw new NotFoundError("Book with ID: " +id+ " has not been found.");
+        }
+
+        List<BookDto> bookDtoList = bookList.stream().map(mapper::bookToBookDto).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(bookDtoList);
+
     }
 
     @Override

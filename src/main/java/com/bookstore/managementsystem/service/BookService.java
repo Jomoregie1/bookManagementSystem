@@ -18,7 +18,7 @@ public interface BookService {
 
     ResponseEntity<Void>deleteBook(Long id) throws NotFoundError;
 
-    ResponseEntity<List<BookDto>> getBooksByAuthor(Long id);
+    ResponseEntity<List<BookDto>> getBooksByAuthor(Long id) throws NotFoundError;
 
     ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange);
  }

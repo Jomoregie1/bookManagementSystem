@@ -185,6 +185,35 @@ class BookServiceTest {
         assertEquals(thrown.getMessage(), "Book with ID: 1 has not been found.");
     }
 
+    @Test
+    public void testGetBookByAuthor_WhenAuthorIdProvided_ThenReturnAListOfBooks() throws NotFoundError {
+        when(bookRepo.findAllByAuthor(any(Long.class))).thenReturn(List.of(book,book,book));
+        when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(any(BookDto.class));
+
+        long testAuthorId = 1L;
+        ResponseEntity<List<BookDto>> response = bookService.getBooksByAuthor(testAuthorId);
+        int statusCode = response.getStatusCode().value();
+        List<BookDto> bookDtoList = response.getBody();
+
+        assertEquals(statusCode,200);
+        assertEquals(bookDtoList.size(), 3);
+
+    }
+
+
+    @Test
+    public void testGetBookByAuthor_WhenAuthorIdProvidedIsInvalid_ThenThrowNotFoundError() throws NotFoundError {
+        when(bookRepo.findAllByAuthor(any(Long.class))).thenReturn(List.of());
+
+        long testAuthorId = 1L;
+        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBooksByAuthor(testAuthorId);});
+
+        assertEquals(thrown.getMessage(), "Book with ID: 1 has not been found.");
+
+    }
+
+
+
 
 
 }

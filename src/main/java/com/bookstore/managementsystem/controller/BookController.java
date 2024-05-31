@@ -37,7 +37,7 @@ public class BookController {
     }
 
     @GetMapping("/author/{id}")
-    public ResponseEntity<List<BookDto>> getBooksByAuthor (@PathVariable("id") Long id) {
+    public ResponseEntity<List<BookDto>> getBooksByAuthor (@PathVariable("id") Long id) throws NotFoundError {
         return bookService.getBooksByAuthor(id);
     }
 
