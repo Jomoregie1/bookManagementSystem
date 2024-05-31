@@ -3,7 +3,9 @@ package com.bookstore.managementsystem.service;
 import com.bookstore.managementsystem.customerrors.BookExistsError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
+import com.bookstore.managementsystem.entity.Author;
 import com.bookstore.managementsystem.entity.Book;
+import com.bookstore.managementsystem.repo.AuthorRepo;
 import com.bookstore.managementsystem.repo.BookRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,29 +24,43 @@ public class BookServiceImpl implements BookService{
 
     private BookRepo bookRepo;
     private MapConvertor mapper;
+    private AuthorRepo authorRepo;
 
     @Autowired
-    BookServiceImpl(BookRepo bookRepo, MapConvertor mapConvertor) {
+    BookServiceImpl(BookRepo bookRepo, MapConvertor mapConvertor, AuthorRepo authorRepo) {
         this.bookRepo = bookRepo;
         this.mapper = mapConvertor;
+        this.authorRepo = authorRepo;
     }
 
-// TODO ensure to create author, when book object is created. Make changes to DTO object.
     @Override
-    public ResponseEntity<BookDto> createBook(BookDto book) throws BookExistsError {
+    public ResponseEntity<BookDto> createBook(BookDto bookDto) throws BookExistsError {
         String logMessage;
-        if (bookRepo.existsByIsbn(book.getIsbn())) {
-            logMessage = String.format("Error: Book with ISBN - %d, already exists.", book.getIsbn());
+
+        Author author = authorRepo.findByName(bookDto.getAuthorName())
+                .orElseGet(() -> {
+                    Author newAuthor = Author.builder()
+                            .name(bookDto.getAuthorName())
+                            .build();
+                    return authorRepo.save(newAuthor);
+                });
+
+
+        if (bookRepo.existsByIsbn(bookDto.getIsbn())) {
+            logMessage = String.format("Error: Book with ISBN - %d, already exists.", bookDto.getIsbn());
             log.error(logMessage);
             throw new BookExistsError("The book you are trying to create has been found in our system.");
         }
 
-        Book current_book = mapper.BookDtoToBook(book);
-        logMessage = String.format("Book with ISBN - %d, created.", book.getIsbn());
-        log.info(logMessage);
-        bookRepo.save(current_book);
 
-        return ResponseEntity.status(HttpStatus.OK).body(book);
+        Book book = mapper.BookDtoToBook(bookDto);
+        book.setAuthor(author);
+
+        logMessage = String.format("Book with ISBN - %d, created.", bookDto.getIsbn());
+        log.info(logMessage);
+        bookRepo.save(book);
+
+        return ResponseEntity.status(HttpStatus.OK).body(bookDto);
     }
 
     @Override

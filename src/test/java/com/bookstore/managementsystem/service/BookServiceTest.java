@@ -3,7 +3,9 @@ package com.bookstore.managementsystem.service;
 import com.bookstore.managementsystem.customerrors.BookExistsError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
+import com.bookstore.managementsystem.entity.Author;
 import com.bookstore.managementsystem.entity.Book;
+import com.bookstore.managementsystem.repo.AuthorRepo;
 import com.bookstore.managementsystem.repo.BookRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
 import org.aspectj.weaver.ast.Not;
@@ -34,18 +36,29 @@ class BookServiceTest {
     private MapConvertor mapConvertor;
 
     @Mock
+    private AuthorRepo authorRepo;
+
+    @Mock
     private BookRepo bookRepo;
     private BookDto bookDto;
     private Book book;
+    private Author author;
 
     @BeforeEach
     void setUp() {
+
+        this.author = Author.builder()
+                .id(1L)
+                .name("J.K.Rowling")
+                .build();
+
 
         this.bookDto = BookDto.builder()
                 .price(10)
                 .isbn(12345678)
                 .title("Random title")
                 .publicationDate(LocalDate.of(2020,1,10))
+                .authorName(this.author.getName())
                 .build();
 
         this.book = Book.builder()
@@ -54,6 +67,7 @@ class BookServiceTest {
                 .title("Random title")
                 .publicationDate(LocalDate.of(2020,1,10))
                 .id(1)
+                .author(this.author)
                 .build();
 
     }
@@ -66,6 +80,7 @@ class BookServiceTest {
                 .thenReturn(this.book);
         when(bookRepo.save(any(Book.class)))
                 .thenReturn(book);
+        when(authorRepo.findByName(any(String.class))).thenReturn(Optional.of(this.author));
 
         //Act
         ResponseEntity<BookDto> response = bookService.createBook(bookDto);
@@ -82,6 +97,7 @@ class BookServiceTest {
     @Test
     public void testCreateBook_WhenBookExistsErrorThrown_ThenTestExceptionThrow() throws BookExistsError {
         // Arrange
+        when(authorRepo.findByName(any(String.class))).thenReturn(Optional.of(this.author));
         when(bookRepo.existsByIsbn(any(Long.class)))
                 .thenReturn(true);
 
