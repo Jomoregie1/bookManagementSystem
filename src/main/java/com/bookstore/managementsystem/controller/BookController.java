@@ -47,7 +47,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookDto> updateBook(@PathVariable("id") Long id, BookDto bookDto) {
+    public ResponseEntity<BookDto> updateBook(@PathVariable("id") Long id, BookDto bookDto) throws NotFoundError{
         return bookService.updateBook(id, bookDto);
     }
 

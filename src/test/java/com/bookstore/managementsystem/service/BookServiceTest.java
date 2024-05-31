@@ -139,10 +139,32 @@ class BookServiceTest {
     }
 
     @Test
-    public void testUpdateBook_WhenUpdatingBook_ThenReturnSucess() {
+    public void testUpdateBook_WhenUpdatingBook_ThenReturnSucess() throws NotFoundError {
         when(bookRepo.existsById(any(Long.class)))
                 .thenReturn(true);
+        when(mapConvertor.BookDtoToBook(any(BookDto.class))).thenReturn(this.book);
+
+        long bookId = 1L;
+
+        ResponseEntity<BookDto> response = bookService.updateBook(bookId,this.bookDto);
+        int statusCode = response.getStatusCode().value();
+        BookDto testBookDto = response.getBody();
+
+        assertEquals(statusCode, 200);
+        assertEquals(testBookDto, bookDto);
+
+
     }
+
+    @Test
+    public void testUpdateBook_WhenUpdatingBookWithInvalidId_ThenAssertNotFoundErrorFound() throws NotFoundError{
+        when(bookRepo.existsById(any(Long.class))).thenReturn(false);
+        Long testId = 1L;
+
+        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.updateBook(testId, bookDto);});
+        assertEquals(thrown.getMessage(),"Book with ID: 1 has not been found.");
+    }
+    
 
 
 }

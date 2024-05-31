@@ -71,8 +71,16 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<BookDto> updateBook(Long id, BookDto bookDto) {
-        return null;
+    public ResponseEntity<BookDto> updateBook(Long id, BookDto bookDto) throws NotFoundError{
+        boolean exists = bookRepo.existsById(id);
+        if (!exists) {
+            throw new NotFoundError("Book with ID: "+id+" has not been found.");
+        }
+
+        Book convertedBook = mapper.BookDtoToBook(bookDto);
+        bookRepo.save(convertedBook);
+
+        return ResponseEntity.status(HttpStatus.OK).body(bookDto);
     }
 
     @Override
