@@ -164,7 +164,27 @@ class BookServiceTest {
         NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.updateBook(testId, bookDto);});
         assertEquals(thrown.getMessage(),"Book with ID: 1 has not been found.");
     }
-    
+
+    @Test
+    public void testDeleteBook_WhenBookIdProvided_ThenReturnOkStatus() throws NotFoundError{
+        when(bookRepo.existsById(any(Long.class))).thenReturn(true);
+
+        long bookId = 1L;
+        ResponseEntity<Void> response = this.bookService.deleteBook(bookId);
+        int statusCode = response.getStatusCode().value();
+        assertEquals(statusCode, 200);
+
+    }
+
+    @Test
+    public void testDeleteBook_WhenBookIdProvidedDoesNotExist_ThenThrowNotFoundError() {
+        when(bookRepo.existsById(any(Long.class))).thenReturn(false );
+
+        long testId = 1L;
+        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.deleteBook(testId);});
+        assertEquals(thrown.getMessage(), "Book with ID: 1 has not been found.");
+    }
+
 
 
 }

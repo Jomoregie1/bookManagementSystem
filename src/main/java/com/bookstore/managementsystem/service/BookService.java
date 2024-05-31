@@ -16,7 +16,7 @@ public interface BookService {
 
     ResponseEntity<BookDto> updateBook(Long id, BookDto bookDto) throws NotFoundError;
 
-    ResponseEntity<Void>deleteBook(Long id);
+    ResponseEntity<Void>deleteBook(Long id) throws NotFoundError;
 
     ResponseEntity<List<BookDto>> getBooksByAuthor(Long id);
 

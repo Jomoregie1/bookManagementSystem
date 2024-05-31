@@ -52,7 +52,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteBook(@PathVariable("id") Long id) throws NotFoundError {
         return bookService.deleteBook(id);
     }
 }
