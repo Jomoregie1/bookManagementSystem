@@ -20,5 +20,5 @@ public interface BookService {
 
     ResponseEntity<List<BookDto>> getBooksByAuthor(Long id) throws NotFoundError;
 
-    ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange);
+    ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange) throws NotFoundError;
  }

@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Qualifier("BookService")
@@ -107,7 +105,14 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange) {
-        return null;
-    }
+    public ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange) throws NotFoundError {
+        List<Book> bookList = bookRepo.findByPriceBetween(startOfRange, endOfRange);
+        if (bookList.isEmpty()) {
+            throw new NotFoundError("Books with price starting from "
+                    +startOfRange+ " and ending at "+endOfRange+", has not been found.");
+        }
+
+        List<BookDto> bookDtoList = bookList.stream().map(mapper::bookToBookDto).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(bookDtoList);
+        }
 }

@@ -42,7 +42,7 @@ public class BookController {
     }
 
     @GetMapping("/price-range")
-    public ResponseEntity<List<BookDto>> getBooksByPriceRange(@RequestParam double startOfRange, @RequestParam double endOfRange) {
+    public ResponseEntity<List<BookDto>> getBooksByPriceRange(@RequestParam double startOfRange, @RequestParam double endOfRange) throws NotFoundError {
         return bookService.getBookWithInPriceRange(startOfRange,endOfRange);
     }
 

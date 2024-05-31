@@ -212,7 +212,30 @@ class BookServiceTest {
 
     }
 
+    @Test
+    public void testGetBookWithInPriceRange_WhenStartPriceAndEndPriceProvided_ThenReturnBooksFound() throws NotFoundError {
+        when(bookRepo.findByPriceBetween(any(Double.class), any(Double.class))).thenReturn(List.of(book,book,book));
+        when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(bookDto);
 
+        double startPrice = 10.5;
+        double endPrice = 15.5;
+        ResponseEntity<List<BookDto>> response = bookService.getBookWithInPriceRange(startPrice, endPrice);
+        int statusCode = response.getStatusCode().value();
+        List<BookDto> bookDtoList = response.getBody();
+
+        assertEquals(statusCode,200);
+        assertEquals(bookDtoList.size(), 3);
+    }
+
+    @Test
+    public void testGetWithInPriceRange_WhenPriceNotFound_ThenThrowNotFoundException() {
+        when(bookRepo.findByPriceBetween(any(Double.class),any(Double.class))).thenReturn(List.of());
+
+        double value1 = 10.5;
+        double value2 = 15.5;
+        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBookWithInPriceRange(value1, value2);});
+        assertEquals(thrown.getMessage(), "Books with price starting from 10.5 and ending at 15.5, has not been found.");
+    }
 
 
 

@@ -12,11 +12,14 @@ import java.util.List;
 @Repository
 public interface BookRepo extends JpaRepository<Book, Long> {
 
-    @Query("Select count(isbn) > 0 From Book Where isbn = :isbn")
+    @Query("SELECT COUNT(isbn) > 0 FROM Book WHERE isbn = :isbn")
     boolean existsByIsbn(@Param("isbn") long isbn);
 
-    @Query("from Book where author_id = :author_id")
+    @Query("SELECT b FROM Book b WHERE b.author_id = :author_id")
     List<Book>findAllByAuthor(@Param("author_id") long id);
+
+    @Query("SELECT b FROM Book b WHERE price BETWEEN :startPrice AND :endPrice")
+    List<Book> findByPriceBetween(@Param("startPrice") double startPrice, @Param("endPrice") double endPrice);
 
 
 }
