@@ -20,7 +20,7 @@ public class Author {
     @Column(name = "author_name")
     private String name;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.MERGE, orphanRemoval = true)
     private Set<Book> books;
 
 }

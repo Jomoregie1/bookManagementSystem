@@ -45,8 +45,8 @@ public class BookServiceImpl implements BookService{
                     return authorRepo.save(newAuthor);
                 });
 
-
-        if (bookRepo.existsByIsbn(bookDto.getIsbn())) {
+        long isbnCount = bookRepo.countByIsbn(bookDto.getIsbn());
+        if (isbnCount > 0) {
             logMessage = String.format("Error: Book with ISBN - %d, already exists.", bookDto.getIsbn());
             log.error(logMessage);
             throw new BookExistsError("The book you are trying to create has been found in our system.");

@@ -98,8 +98,8 @@ class BookServiceTest {
     public void testCreateBook_WhenBookExistsErrorThrown_ThenTestExceptionThrow() throws BookExistsError {
         // Arrange
         when(authorRepo.findByName(any(String.class))).thenReturn(Optional.of(this.author));
-        when(bookRepo.existsByIsbn(any(Long.class)))
-                .thenReturn(true);
+        when(bookRepo.countByIsbn(any(Long.class)))
+                .thenReturn(1L);
 
         //Act & Assert
         BookExistsError thrown = assertThrows(BookExistsError.class, () -> {bookService.createBook(bookDto);});
