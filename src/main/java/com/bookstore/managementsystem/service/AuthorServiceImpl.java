@@ -58,7 +58,12 @@ public class AuthorServiceImpl implements AuthorService{
 
     @Override
     public ResponseEntity<Void> updateAuthor(Long id, AuthorDto authorDto) {
-        return null;
+        Optional<Author> authorOptional = authorRepo.findById(id);
+        Author newAuthor = mapConvertor.authorDtoToAuthor(authorDto);
+        authorRepo.save(newAuthor);
+        return ResponseEntity.status(HttpStatus.OK).build();
+
+
     }
 
     @Override

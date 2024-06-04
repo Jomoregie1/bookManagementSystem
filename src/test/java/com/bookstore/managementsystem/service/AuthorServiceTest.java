@@ -102,6 +102,16 @@ class AuthorServiceTest {
 
     }
 
+    @Test
+    public void testUpdateAuthor_WhenValidIdProvided_ThenReturn200() {
+        when(authorRepo.findById(any(Long.class))).thenReturn(Optional.of(this.author));
+        long testId = 1L;
+
+        ResponseEntity<Void> responseEntity = authorService.updateAuthor(testId, this.authorDto);
+        assertEquals(200, responseEntity.getStatusCode().value());
+
+    }
+
 
 
 
