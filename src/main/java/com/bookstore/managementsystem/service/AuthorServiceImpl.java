@@ -72,8 +72,11 @@ public class AuthorServiceImpl implements AuthorService{
     }
 
     @Override
-    public ResponseEntity<AuthorDto> getAuthorById(Long id) {
+    public ResponseEntity<AuthorDto> getAuthorById(Long id) throws  NotFoundError{
         Optional<Author> author = authorRepo.findById(id);
+        if(author.isEmpty()) {
+            throw new NotFoundError("No Author found with the ID: " +id+ ".");
+        }
         AuthorDto foundAuthor = mapConvertor.authorToAuthorDto(author.get());
 
         return ResponseEntity.status(HttpStatus.OK).body(foundAuthor);

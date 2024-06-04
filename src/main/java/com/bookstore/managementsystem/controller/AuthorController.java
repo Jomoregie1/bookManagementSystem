@@ -39,7 +39,7 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AuthorDto> getAuthorById(@PathVariable("id") Long id) {
+    public ResponseEntity<AuthorDto> getAuthorById(@PathVariable("id") Long id) throws NotFoundError {
         return this.authorService.getAuthorById(id);
     }
 

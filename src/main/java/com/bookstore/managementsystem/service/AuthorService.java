@@ -15,7 +15,7 @@ public interface AuthorService {
 
     ResponseEntity<Void>updateAuthor(Long id, AuthorDto authorDto) throws NotFoundError;
 
-    ResponseEntity<AuthorDto> getAuthorById(Long id);
+    ResponseEntity<AuthorDto> getAuthorById(Long id) throws NotFoundError;
 
     ResponseEntity<Void>deleteAuthorById(Long id);
 }

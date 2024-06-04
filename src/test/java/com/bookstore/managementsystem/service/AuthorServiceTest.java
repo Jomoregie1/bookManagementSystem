@@ -122,7 +122,7 @@ class AuthorServiceTest {
     }
 
     @Test
-    public void testGetAuthorById_WhenAuthorPresent_ThenReturnAuthor() {
+    public void testGetAuthorById_WhenAuthorPresent_ThenReturnAuthor() throws NotFoundError{
         when(authorRepo.findById(any(Long.class))).thenReturn(Optional.of(this.author));
         when(mapConvertor.authorToAuthorDto(any(Author.class))).thenReturn(this.authorDto);
         long testId = 1L;
@@ -136,13 +136,13 @@ class AuthorServiceTest {
     }
 
     @Test
-    public void testGetAuthorById_WhenAuthorIsNotPresent_ThenThrowNotFoundError() {
+    public void testGetAuthorById_WhenAuthorIsNotPresent_ThenThrowNotFoundError() throws NotFoundError{
         when(authorRepo.findById(any(Long.class))).thenReturn(Optional.empty());
         long testId = 1L;
 
         NotFoundError notFoundError = assertThrows(NotFoundError.class, () -> {authorService.getAuthorById(testId);});
         assertEquals("No Author found with the ID: 1.", notFoundError.getMessage());
-        
+
     }
 
 
