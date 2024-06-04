@@ -89,7 +89,7 @@ class BookServiceTest {
 
         //Assert
         assertEquals(responseBody,bookDto);
-        assertEquals(statusCode,HttpStatusCode.valueOf(200));
+        assertEquals(statusCode,HttpStatusCode.valueOf(201));
 
     }
 

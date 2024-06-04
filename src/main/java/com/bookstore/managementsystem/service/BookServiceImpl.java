@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService{
         log.info(logMessage);
         bookRepo.save(book);
 
-        return ResponseEntity.status(HttpStatus.OK).body(bookDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookDto);
     }
 
     @Override
