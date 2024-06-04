@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -50,19 +50,39 @@ public class BookRepoIntegrationTest {
                 .build();
     }
 
+    @Test
+    public void testCreateBook_WhenBookDoesNotExist_ThenReturn201() throws Exception{
+
+        // Arrange
+        RequestBuilder postRequest = post("/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(this.bookDto));
+
+        // Act
+        var response = mockMvc.perform(postRequest).andReturn().getResponse();
+        int statusCode = response.getStatus();
+        BookDto bookDto1 = mapper.readValue(response.getContentAsString(), BookDto.class);
+
+        //Assert
+        assertEquals(201, statusCode);
+        assertEquals(bookDto1.getIsbn(), this.bookDto.getIsbn());
+
+
+    }
+
 
     @Test
     public void testGetAllBooksEndpoint_WhenBooksExist_ThenReturns200() throws Exception {
         // Arrange
-        RequestBuilder postRequest = MockMvcRequestBuilders.post("/books")
+        RequestBuilder postRequest = post("/books")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(this.bookDto));
 
-        RequestBuilder getRequest = MockMvcRequestBuilders.get("/books");
+        RequestBuilder getRequest = get("/books");
 
         //Act & Assert
-        mockMvc.perform(postRequest).andExpect(MockMvcResultMatchers.status().isCreated());
-        var getResponse = mockMvc.perform(getRequest).andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse();
+        mockMvc.perform(postRequest).andExpect(status().isCreated());
+        var getResponse = mockMvc.perform(getRequest).andExpect(status().isOk()).andReturn().getResponse();
 
 
         // Assert
