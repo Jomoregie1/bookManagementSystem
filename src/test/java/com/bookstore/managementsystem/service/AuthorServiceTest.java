@@ -112,6 +112,15 @@ class AuthorServiceTest {
 
     }
 
+    @Test
+    public void testUpdateAuthor_WhenInvalidIdProvided_ThenThrowNotFoundError() {
+        when(authorRepo.findById(any(Long.class))).thenReturn(Optional.empty());
+        long testId = 1L;
+
+        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {authorService.getAuthorById(testId);});
+        assertEquals("No Author Found with the given Id: 1.", raisedError.getMessage());
+    }
+
 
 
 
