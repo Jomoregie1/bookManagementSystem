@@ -145,8 +145,16 @@ class AuthorServiceTest {
 
     }
 
+    @Test
+    public void testDeletedAuthorById_WhenAuthorIsPresent_ThenReturn200() {
+        when(authorRepo.existsById(any(Long.class))).thenReturn(true);
+        long testId = 1L;
 
+        ResponseEntity<Void> response = authorService.deleteAuthorById(testId);
+        int statusCode = response.getStatusCode().value();
 
+        assertEquals(200, statusCode);
+    }
 
 
 
