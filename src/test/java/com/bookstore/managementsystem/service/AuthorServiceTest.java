@@ -121,6 +121,20 @@ class AuthorServiceTest {
         assertEquals("No Author Found with the given Id: 1.", raisedError.getMessage());
     }
 
+    @Test
+    public void testGetAuthorById_WhenAuthorPresent_ThenReturnAuthor() {
+        when(authorRepo.findById(any(Long.class))).thenReturn(Optional.of(this.author));
+        when(mapConvertor.authorToAuthorDto(any(Author.class))).thenReturn(this.authorDto);
+        long testId = 1L;
+
+        ResponseEntity<AuthorDto> authorDtoResponseEntity = authorService.getAuthorById(testId);
+        int statusCode = authorDtoResponseEntity.getStatusCode().value();
+        AuthorDto authorDto1 = authorDtoResponseEntity.getBody();
+
+        assertEquals(200, statusCode);
+        assertEquals(this.authorDto, authorDto1);
+    }
+
 
 
 
