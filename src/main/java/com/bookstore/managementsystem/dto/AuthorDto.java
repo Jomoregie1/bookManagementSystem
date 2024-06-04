@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class AuthorDto {
 
     String name;
-    String biography;
 }

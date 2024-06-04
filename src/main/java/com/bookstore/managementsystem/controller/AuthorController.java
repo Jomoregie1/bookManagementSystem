@@ -3,6 +3,7 @@ package com.bookstore.managementsystem.controller;
 import com.bookstore.managementsystem.dto.AuthorDto;
 import com.bookstore.managementsystem.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
+@Qualifier("AuthorController")
 public class AuthorController {
 
     private final AuthorService authorService;

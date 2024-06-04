@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.dto.BookDto;
+import com.bookstore.managementsystem.repo.AuthorRepo;
 import com.bookstore.managementsystem.service.BookService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +32,12 @@ class BookControllerTest {
 
     @MockBean
     private BookService bookService;
+
+
+    @MockBean
+    private AuthorRepo authorRepo;
+
+
     @Autowired
     private MockMvc mockMvc;
     private BookDto bookDto;

@@ -1,6 +1,8 @@
 package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.dto.OrderDto;
+import com.bookstore.managementsystem.repo.AuthorRepo;
+import com.bookstore.managementsystem.repo.BookRepo;
 import com.bookstore.managementsystem.service.OrderService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +33,12 @@ class OrderControllerTest {
 
     @MockBean
     private OrderService orderService;
+
+    @MockBean
+    private AuthorRepo authorRepo;
+
+    @MockBean
+    private BookRepo bookRepo;
 
     private OrderDto orderDto;
     private ObjectMapper mapper;
