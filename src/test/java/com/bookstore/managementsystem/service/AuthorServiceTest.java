@@ -14,6 +14,7 @@ import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,6 +76,22 @@ class AuthorServiceTest {
         assertEquals(raisedError.getMessage(), "An Author with the name: John Doe already exists.");
     }
 
+    @Test
+    public void testGetAuthors_WhenCalled_ThenReturnAListOfAllAuthors() {
+        when(authorRepo.findAll()).thenReturn(List.of(this.author,this.author,this.author));
+        when(mapConvertor.authorToAuthorDto(any(Author.class))).thenReturn(this.authorDto);
+
+        ResponseEntity<List<AuthorDto>> responseEntityAuthorDtoList = authorService.getAuthors();
+        int statusCode = responseEntityAuthorDtoList.getStatusCode().value();
+        List<AuthorDto> authorDtoList = responseEntityAuthorDtoList.getBody();
+
+        assertEquals(200, statusCode);
+        assertEquals(3, authorDtoList.size());
+
+    }
+
+    @Test
+    public void testGetAuthors_whe
 
 
 

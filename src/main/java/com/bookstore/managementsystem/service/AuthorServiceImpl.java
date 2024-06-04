@@ -43,7 +43,12 @@ public class AuthorServiceImpl implements AuthorService{
 
     @Override
     public ResponseEntity<List<AuthorDto>> getAuthors() {
-        return null;
+        List<Author> authors = authorRepo.findAll();
+        List<AuthorDto> authorDtoList = authors.stream()
+                .map(mapConvertor::authorToAuthorDto)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(authorDtoList);
     }
 
     @Override
