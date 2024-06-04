@@ -1,6 +1,6 @@
 package com.bookstore.managementsystem.handler;
 
-import com.bookstore.managementsystem.customerrors.BookExistsError;
+import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(BookExistsError.class)
-    public ResponseEntity<ErrorDto> bookExistsException(BookExistsError bookExistsError){
+    @ExceptionHandler(AlreadyExistsError.class)
+    public ResponseEntity<ErrorDto> bookExistsException(AlreadyExistsError bookExistsError){
         ErrorDto error = ErrorDto.builder()
                 .statusCode(HttpStatusCode.valueOf(404))
                 .message(bookExistsError.getMessage())
