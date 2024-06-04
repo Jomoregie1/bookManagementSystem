@@ -61,6 +61,7 @@ class BookRepoTest {
     public void testFindAllByAuthor() {
         List<Book> booksByAuthor = bookRepo.findAllByAuthor(this.author.getId());
         assertEquals(booksByAuthor.size(), 1);
+        assertEquals(booksByAuthor.get(0).getIsbn(), this.book.getIsbn());
     }
 
     @Test
