@@ -84,6 +84,8 @@ public class AuthorServiceImpl implements AuthorService{
 
     @Override
     public ResponseEntity<Void> deleteAuthorById(Long id) {
-        return null;
+        boolean exists = authorRepo.existsById(id);
+        authorRepo.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
