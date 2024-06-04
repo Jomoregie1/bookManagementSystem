@@ -64,9 +64,15 @@ class AuthorServiceTest {
         assertEquals(statusCode, 201);
         assertEquals(authorDto1, this.authorDto);
 
+    }
 
+    @Test
+    public void testCreateAuthor_WhenGivenAuthorDtoIsPresent_ThenThrowAlreadyExistsError() {
+        when(authorRepo.findAuthorByName(any(String.class))).thenReturn(Optional.of(this.author));
 
+        AlreadyExistsError raisedError = assertThrows(AlreadyExistsError.class, () -> {authorService.createAuthor(this.authorDto);});
 
+        assertEquals(raisedError.getMessage(), "An Author with the name: John Doe already exists.");
     }
 
 

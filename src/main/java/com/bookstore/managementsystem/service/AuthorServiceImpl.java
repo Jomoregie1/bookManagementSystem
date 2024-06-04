@@ -32,7 +32,7 @@ public class AuthorServiceImpl implements AuthorService{
         Optional<Author> authorOptional = authorRepo.findAuthorByName(authorDto.getName());
 
         if (authorOptional.isPresent()) {
-            throw new AlreadyExistsError("An Author with the name: " + authorDto.getName() + "already exists.");
+            throw new AlreadyExistsError("An Author with the name: " + authorDto.getName() + " already exists.");
         }
 
         Author author = mapConvertor.authorDtoToAuthor(authorDto);
