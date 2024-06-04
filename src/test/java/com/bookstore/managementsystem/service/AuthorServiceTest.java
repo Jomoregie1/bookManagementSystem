@@ -156,6 +156,16 @@ class AuthorServiceTest {
         assertEquals(200, statusCode);
     }
 
+    @Test
+    public void testDeleteAuthorById_WhenAuthorIsNotPresent_ThenThrowNotFoundException() {
+        when(authorRepo.existsById(any(Long.class))).thenReturn(false);
+        long testId = 1L;
+
+        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {authorService.deleteAuthorById(testId);});
+
+        assertEquals("No Author found with the ID: 1.", raisedError.getMessage());
+    }
+
 
 
 
