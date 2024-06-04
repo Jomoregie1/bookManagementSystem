@@ -135,7 +135,17 @@ class AuthorServiceTest {
         assertEquals(this.authorDto, authorDto1);
     }
 
-    
+    @Test
+    public void testGetAuthorById_WhenAuthorIsNotPresent_ThenThrowNotFoundError() {
+        when(authorRepo.findById(any(Long.class))).thenReturn(Optional.empty());
+        long testId = 1L;
+
+        NotFoundError notFoundError = assertThrows(NotFoundError.class, () -> {authorService.getAuthorById(testId);});
+        assertEquals("No Author found with the ID: 1.", notFoundError.getMessage());
+        
+    }
+
+
 
 
 
