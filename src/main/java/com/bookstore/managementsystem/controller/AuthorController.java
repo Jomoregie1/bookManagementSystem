@@ -34,7 +34,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateAuthor(@PathVariable("id") Long id, @RequestBody AuthorDto authorDto) {
+    public ResponseEntity<Void> updateAuthor(@PathVariable("id") Long id, @RequestBody AuthorDto authorDto) throws NotFoundError{
         return this.authorService.updateAuthor(id, authorDto);
     }
 

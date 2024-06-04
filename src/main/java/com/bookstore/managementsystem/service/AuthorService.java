@@ -13,7 +13,7 @@ public interface AuthorService {
 
     ResponseEntity<List<AuthorDto>>getAuthors() throws NotFoundError;
 
-    ResponseEntity<Void>updateAuthor(Long id, AuthorDto authorDto);
+    ResponseEntity<Void>updateAuthor(Long id, AuthorDto authorDto) throws NotFoundError;
 
     ResponseEntity<AuthorDto> getAuthorById(Long id);
 

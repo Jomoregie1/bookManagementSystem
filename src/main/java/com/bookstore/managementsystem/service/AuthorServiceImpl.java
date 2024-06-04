@@ -57,8 +57,13 @@ public class AuthorServiceImpl implements AuthorService{
     }
 
     @Override
-    public ResponseEntity<Void> updateAuthor(Long id, AuthorDto authorDto) {
+    public ResponseEntity<Void> updateAuthor(Long id, AuthorDto authorDto) throws NotFoundError{
         Optional<Author> authorOptional = authorRepo.findById(id);
+
+        if(authorOptional.isEmpty()) {
+            throw new NotFoundError("No Author Found with the given Id: " +id+ ".");
+        }
+
         Author newAuthor = mapConvertor.authorDtoToAuthor(authorDto);
         authorRepo.save(newAuthor);
         return ResponseEntity.status(HttpStatus.OK).build();

@@ -103,7 +103,7 @@ class AuthorServiceTest {
     }
 
     @Test
-    public void testUpdateAuthor_WhenValidIdProvided_ThenReturn200() {
+    public void testUpdateAuthor_WhenValidIdProvided_ThenReturn200() throws NotFoundError{
         when(authorRepo.findById(any(Long.class))).thenReturn(Optional.of(this.author));
         long testId = 1L;
 
@@ -113,11 +113,11 @@ class AuthorServiceTest {
     }
 
     @Test
-    public void testUpdateAuthor_WhenInvalidIdProvided_ThenThrowNotFoundError() {
+    public void testUpdateAuthor_WhenInvalidIdProvided_ThenThrowNotFoundError() throws NotFoundError{
         when(authorRepo.findById(any(Long.class))).thenReturn(Optional.empty());
         long testId = 1L;
 
-        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {authorService.getAuthorById(testId);});
+        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {authorService.updateAuthor(testId,authorDto);});
         assertEquals("No Author Found with the given Id: 1.", raisedError.getMessage());
     }
 
