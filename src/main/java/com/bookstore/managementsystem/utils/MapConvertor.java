@@ -22,7 +22,7 @@ public interface MapConvertor {
     Book bookDtoToBook(BookDto bookDto);
 
     AuthorDto authorToAuthorDto(Author author);
-    
+
     Author authorDtoToAuthor(AuthorDto authorDto);
 
 }

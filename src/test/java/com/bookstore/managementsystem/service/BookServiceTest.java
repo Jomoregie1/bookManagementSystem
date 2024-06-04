@@ -1,6 +1,6 @@
 package com.bookstore.managementsystem.service;
 
-import com.bookstore.managementsystem.customerrors.BookExistsError;
+import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.entity.Author;
@@ -8,7 +8,6 @@ import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.repo.AuthorRepo;
 import com.bookstore.managementsystem.repo.BookRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
-import org.aspectj.weaver.ast.Not;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
@@ -74,13 +72,13 @@ class BookServiceTest {
 
     @Test
     @DisplayName("Test create book in service layer.")
-    public void testCreateBook_WhenNewBookObjectCreated_ReturnCreatedBookObjectAndOkStatus() throws BookExistsError {
+    public void testCreateBook_WhenNewBookObjectCreated_ReturnCreatedBookObjectAndOkStatus() throws AlreadyExistsError {
         // Arrange
-        when(mapConvertor.BookDtoToBook(any(BookDto.class)))
+        when(mapConvertor.bookDtoToBook(any(BookDto.class)))
                 .thenReturn(this.book);
         when(bookRepo.save(any(Book.class)))
                 .thenReturn(book);
-        when(authorRepo.findByName(any(String.class))).thenReturn(Optional.of(this.author));
+        when(authorRepo.findAuthorByName(any(String.class))).thenReturn(Optional.of(this.author));
 
         //Act
         ResponseEntity<BookDto> response = bookService.createBook(bookDto);
@@ -95,14 +93,14 @@ class BookServiceTest {
 
 
     @Test
-    public void testCreateBook_WhenBookExistsErrorThrown_ThenTestExceptionThrow() throws BookExistsError {
+    public void testCreateBook_WhenBookExistsErrorThrown_ThenTestExceptionThrow() throws AlreadyExistsError {
         // Arrange
-        when(authorRepo.findByName(any(String.class))).thenReturn(Optional.of(this.author));
+        when(authorRepo.findAuthorByName(any(String.class))).thenReturn(Optional.of(this.author));
         when(bookRepo.countByIsbn(any(Long.class)))
                 .thenReturn(1L);
 
         //Act & Assert
-        BookExistsError thrown = assertThrows(BookExistsError.class, () -> {bookService.createBook(bookDto);});
+        AlreadyExistsError thrown = assertThrows(AlreadyExistsError.class, () -> {bookService.createBook(bookDto);});
         assertEquals("The book you are trying to create has been found in our system.", thrown.getMessage());
 
 
@@ -158,7 +156,7 @@ class BookServiceTest {
     public void testUpdateBook_WhenUpdatingBook_ThenReturnSucess() throws NotFoundError {
         when(bookRepo.existsById(any(Long.class)))
                 .thenReturn(true);
-        when(mapConvertor.BookDtoToBook(any(BookDto.class))).thenReturn(this.book);
+        when(mapConvertor.bookDtoToBook(any(BookDto.class))).thenReturn(this.book);
 
         long bookId = 1L;
 

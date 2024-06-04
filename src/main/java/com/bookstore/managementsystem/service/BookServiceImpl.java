@@ -1,6 +1,6 @@
 package com.bookstore.managementsystem.service;
 
-import com.bookstore.managementsystem.customerrors.BookExistsError;
+import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.entity.Author;
@@ -34,10 +34,10 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<BookDto> createBook(BookDto bookDto) throws BookExistsError {
+    public ResponseEntity<BookDto> createBook(BookDto bookDto) throws AlreadyExistsError {
         String logMessage;
 
-        Author author = authorRepo.findByName(bookDto.getAuthorName())
+        Author author = authorRepo.findAuthorByName(bookDto.getAuthorName())
                 .orElseGet(() -> {
                     Author newAuthor = Author.builder()
                             .name(bookDto.getAuthorName())
@@ -49,11 +49,11 @@ public class BookServiceImpl implements BookService{
         if (isbnCount > 0) {
             logMessage = String.format("Error: Book with ISBN - %d, already exists.", bookDto.getIsbn());
             log.error(logMessage);
-            throw new BookExistsError("The book you are trying to create has been found in our system.");
+            throw new AlreadyExistsError("The book you are trying to create has been found in our system.");
         }
 
 
-        Book book = mapper.BookDtoToBook(bookDto);
+        Book book = mapper.bookDtoToBook(bookDto);
         book.setAuthor(author);
 
         logMessage = String.format("Book with ISBN - %d, created.", bookDto.getIsbn());
@@ -92,7 +92,7 @@ public class BookServiceImpl implements BookService{
             throw new NotFoundError("Book with ID: "+id+" has not been found.");
         }
 
-        Book convertedBook = mapper.BookDtoToBook(bookDto);
+        Book convertedBook = mapper.bookDtoToBook(bookDto);
         bookRepo.save(convertedBook);
 
         return ResponseEntity.status(HttpStatus.OK).body(bookDto);

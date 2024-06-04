@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AlreadyExistsError.class)
-    public ResponseEntity<ErrorDto> bookExistsException(AlreadyExistsError bookExistsError){
+    public ResponseEntity<ErrorDto> alreadyExistsException(AlreadyExistsError alreadyExistsError){
         ErrorDto error = ErrorDto.builder()
                 .statusCode(HttpStatusCode.valueOf(404))
-                .message(bookExistsError.getMessage())
+                .message(alreadyExistsError.getMessage())
                 .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);

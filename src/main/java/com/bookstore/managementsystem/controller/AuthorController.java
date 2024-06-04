@@ -1,5 +1,6 @@
 package com.bookstore.managementsystem.controller;
 
+import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
 import com.bookstore.managementsystem.dto.AuthorDto;
 import com.bookstore.managementsystem.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class AuthorController {
     }
 
     @PostMapping()
-    public ResponseEntity<AuthorDto> createAuthor (@RequestBody AuthorDto authorDto) {
+    public ResponseEntity<AuthorDto> createAuthor (@RequestBody AuthorDto authorDto) throws AlreadyExistsError {
         return this.authorService.createAuthor(authorDto);
     }
 

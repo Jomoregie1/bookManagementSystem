@@ -1,6 +1,6 @@
 package com.bookstore.managementsystem.service;
 
-import com.bookstore.managementsystem.customerrors.BookExistsError;
+import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BookService {
 
-    ResponseEntity<BookDto> createBook(BookDto book) throws BookExistsError;
+    ResponseEntity<BookDto> createBook(BookDto book) throws AlreadyExistsError;
 
     ResponseEntity<List<BookDto>> getAllBooks() throws NotFoundError;
 

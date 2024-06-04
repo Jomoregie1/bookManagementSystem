@@ -1,6 +1,6 @@
 package com.bookstore.managementsystem.controller;
 
-import com.bookstore.managementsystem.customerrors.BookExistsError;
+import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.service.BookService;
@@ -22,7 +22,7 @@ public class BookController {
     }
 
     @PostMapping()
-    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) throws BookExistsError {
+    public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) throws AlreadyExistsError {
         return bookService.createBook(bookDto);
     }
 

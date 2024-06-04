@@ -1,5 +1,6 @@
 package com.bookstore.managementsystem.service;
 
+import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
 import com.bookstore.managementsystem.dto.AuthorDto;
 import org.springframework.http.ResponseEntity;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public interface AuthorService {
 
-    ResponseEntity<AuthorDto> createAuthor(AuthorDto authorDto);
+    ResponseEntity<AuthorDto> createAuthor(AuthorDto authorDto) throws AlreadyExistsError;
 
     ResponseEntity<List<AuthorDto>>getAuthors();
 
