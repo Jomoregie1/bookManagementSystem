@@ -62,7 +62,14 @@ class BookRepoTest {
         List<Book> booksByAuthor = bookRepo.findAllByAuthor(this.author.getId());
         assertEquals(booksByAuthor.size(), 1);
     }
-    
 
+    @Test
+    public void testfindByPriceBetween() {
+        double lowerBound = 20.5;
+        double upperBound = 22.5;
 
+        List<Book> booksBetweenGivenPrice = bookRepo.findByPriceBetween(lowerBound, upperBound);
+        assertEquals(booksBetweenGivenPrice.size(), 1);
+        assertEquals(booksBetweenGivenPrice.get(0).getIsbn(), this.book.getIsbn());
+    }
 }
