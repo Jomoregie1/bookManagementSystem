@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,6 +56,13 @@ class BookRepoTest {
         assertTrue(isbnCountTest > 0);
 
     }
+
+    @Test
+    public void testFindAllByAuthor() {
+        List<Book> booksByAuthor = bookRepo.findAllByAuthor(this.author.getId());
+        assertEquals(booksByAuthor.size(), 1);
+    }
+    
 
 
 }
