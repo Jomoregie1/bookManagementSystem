@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.service;
 
 import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.AuthorDto;
 import com.bookstore.managementsystem.entity.Author;
 import com.bookstore.managementsystem.repo.AuthorRepo;
@@ -42,8 +43,12 @@ public class AuthorServiceImpl implements AuthorService{
     }
 
     @Override
-    public ResponseEntity<List<AuthorDto>> getAuthors() {
+    public ResponseEntity<List<AuthorDto>> getAuthors() throws NotFoundError{
         List<Author> authors = authorRepo.findAll();
+
+        if (authors.isEmpty()) {
+            throw new NotFoundError("No Authors have been found.");
+        }
         List<AuthorDto> authorDtoList = authors.stream()
                 .map(mapConvertor::authorToAuthorDto)
                 .toList();

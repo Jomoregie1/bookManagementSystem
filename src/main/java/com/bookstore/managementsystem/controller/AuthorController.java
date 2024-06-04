@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.AuthorDto;
 import com.bookstore.managementsystem.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class AuthorController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<AuthorDto>> getAuthors() {
+    public ResponseEntity<List<AuthorDto>> getAuthors() throws NotFoundError {
         return this.authorService.getAuthors();
     }
 

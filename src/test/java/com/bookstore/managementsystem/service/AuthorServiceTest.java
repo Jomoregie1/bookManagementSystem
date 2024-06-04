@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.service;
 
 import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.AuthorDto;
 import com.bookstore.managementsystem.entity.Author;
 import com.bookstore.managementsystem.repo.AuthorRepo;
@@ -77,7 +78,7 @@ class AuthorServiceTest {
     }
 
     @Test
-    public void testGetAuthors_WhenCalled_ThenReturnAListOfAllAuthors() {
+    public void testGetAuthors_WhenCalled_ThenReturnAListOfAllAuthors() throws NotFoundError {
         when(authorRepo.findAll()).thenReturn(List.of(this.author,this.author,this.author));
         when(mapConvertor.authorToAuthorDto(any(Author.class))).thenReturn(this.authorDto);
 
@@ -91,7 +92,15 @@ class AuthorServiceTest {
     }
 
     @Test
-    public void testGetAuthors_whe
+    public void testGetAuthors_whenListOfAuthorsIsEmpty_ThenThrowNotFoundError() throws NotFoundError{
+        when(authorRepo.findAll()).thenReturn(List.of());
+
+        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {authorService.getAuthors();});
+
+        assertEquals(raisedError.getMessage(), "No Authors have been found.");
+
+
+    }
 
 
 

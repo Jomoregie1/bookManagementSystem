@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.service;
 
 import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.AuthorDto;
 import org.springframework.http.ResponseEntity;
 
@@ -10,7 +11,7 @@ public interface AuthorService {
 
     ResponseEntity<AuthorDto> createAuthor(AuthorDto authorDto) throws AlreadyExistsError;
 
-    ResponseEntity<List<AuthorDto>>getAuthors();
+    ResponseEntity<List<AuthorDto>>getAuthors() throws NotFoundError;
 
     ResponseEntity<Void>updateAuthor(Long id, AuthorDto authorDto);
 
