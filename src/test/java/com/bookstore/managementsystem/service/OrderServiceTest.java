@@ -6,6 +6,7 @@ import com.bookstore.managementsystem.dto.OrderDto;
 import com.bookstore.managementsystem.entity.Order;
 import com.bookstore.managementsystem.repo.OrderRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
+import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -140,6 +141,17 @@ class OrderServiceTest {
 
         NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.updateOrder(testId, this.orderDto);});
         assertEquals("No orders found.", raisedError.getMessage());
+    }
+
+    @Test
+    public void testDeleteOrder_WhenValidIdProvided_ThenReturn200() {
+        when(orderRepo.existsById(any(Long.class))).thenReturn(true);
+        long testId = 1L;
+
+        ResponseEntity<Void> response = orderService.deleteOrder(testId);
+        int statusCode = response.getStatusCode().value();
+
+        assertEquals(200, statusCode);
     }
 
 
