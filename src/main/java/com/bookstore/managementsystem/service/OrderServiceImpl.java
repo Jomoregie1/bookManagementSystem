@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Qualifier("OrderService")
@@ -52,7 +53,10 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseEntity<OrderDto> getOrder(Long id) {
-        return null;
+        Optional<Order> order = orderRepo.findById(id);
+        OrderDto orderDto = order.map(mapConvertor::orderToOrderDto).get();
+
+        return ResponseEntity.status(HttpStatus.OK).body(orderDto);
     }
 
     @Override
