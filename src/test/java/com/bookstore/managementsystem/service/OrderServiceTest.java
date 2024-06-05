@@ -1,5 +1,6 @@
 package com.bookstore.managementsystem.service;
 
+import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
 import com.bookstore.managementsystem.dto.OrderDto;
 import com.bookstore.managementsystem.entity.Order;
 import com.bookstore.managementsystem.repo.OrderRepo;
@@ -12,9 +13,11 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +51,7 @@ class OrderServiceTest {
     }
 
     @Test
-    public void testCreateOrder_whenValidOrderPassed_ThenReturn201() {
+    public void testCreateOrder_WhenValidOrderPassed_ThenReturn201() throws DatabaseAccessError {
         when(mapConvertor.orderDtoToOrder(any(OrderDto.class))).thenReturn(this.order);
 
         ResponseEntity<OrderDto> orderDtoResponseEntity = orderService.createOrder(this.orderDto);
@@ -58,6 +61,30 @@ class OrderServiceTest {
         assertEquals(201, statusCode);
         assertEquals(orderDtoResponse, this.orderDto);
 
+    }
+
+    @Test
+    public void testCreateOrder_WhenOrderFailsToSaveToTheDatabase_ThenThrowDataAccessException() throws DatabaseAccessError{
+        when(mapConvertor.orderDtoToOrder(any(OrderDto.class))).thenReturn(this.order);
+        when(orderRepo.save(any(Order.class))).thenThrow(new DataAccessException("...") {});
+
+        DatabaseAccessError thrownError =
+                assertThrows(DatabaseAccessError.class, () -> {orderService.createOrder(this.orderDto);});
+
+    }
+
+    @Test
+    public void testGetOrder_WhenOrdersPresentInTheData_ThenReturnAListOfOrders() {
+        when(orderRepo.findAll()).thenReturn(List.of(this.order,this.order,this.order));
+        when(mapConvertor.orderToOrderDto(any(Order.class))).thenReturn(this.orderDto);
+
+        ResponseEntity<List<OrderDto>> response = orderService.getOrders();
+        int statusCode = response.getStatusCode().value();
+        List<OrderDto> orders = response.getBody();
+
+        assertEquals(200,statusCode);
+        assertEquals(3, orders.size());
+        assertEquals(this.orderDto, orders.get(0));
     }
 
 
