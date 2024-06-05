@@ -1,11 +1,13 @@
 package com.bookstore.managementsystem.service;
 
+import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
 import com.bookstore.managementsystem.dto.OrderDto;
 import com.bookstore.managementsystem.entity.Order;
 import com.bookstore.managementsystem.repo.OrderRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,10 +28,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<OrderDto> createOrder(OrderDto orderDto) {
+    public ResponseEntity<OrderDto> createOrder(OrderDto orderDto) throws DatabaseAccessError {
         Order order = mapConvertor.orderDtoToOrder(orderDto);
-        orderRepo.save(order);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderDto);
+        try {
+            orderRepo.save(order);
+            return ResponseEntity.status(HttpStatus.CREATED).body(orderDto);
+        } catch (DataAccessException e) {
+            throw new DatabaseAccessError("Service is currently unavailable.");
+        }
     }
 
     @Override

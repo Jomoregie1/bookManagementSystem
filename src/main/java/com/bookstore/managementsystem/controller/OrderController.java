@@ -1,5 +1,6 @@
 package com.bookstore.managementsystem.controller;
 
+import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
 import com.bookstore.managementsystem.dto.OrderDto;
 import com.bookstore.managementsystem.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class OrderController {
     }
 
     @PostMapping()
-    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) {
+    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) throws DatabaseAccessError {
         return orderService.createOrder(orderDto);
     }
 
