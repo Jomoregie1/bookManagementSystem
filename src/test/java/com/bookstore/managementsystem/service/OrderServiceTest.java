@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,7 +76,7 @@ class OrderServiceTest {
     }
 
     @Test
-    public void testGetOrder_WhenOrdersPresentInTheData_ThenReturnAListOfOrders() throws NotFoundError{
+    public void testGetOrders_WhenOrdersPresentInTheData_ThenReturnAListOfOrders() throws NotFoundError{
         when(orderRepo.findAll()).thenReturn(List.of(this.order,this.order,this.order));
         when(mapConvertor.orderToOrderDto(any(Order.class))).thenReturn(this.orderDto);
 
@@ -89,10 +90,25 @@ class OrderServiceTest {
     }
 
     @Test
-    public void testGetOrder_WhenListOfOrdersIsEmpty_ThenReturnNotFoundError(){
+    public void testGetOrders_WhenListOfOrdersIsEmpty_ThenReturnNotFoundError(){
         when(orderRepo.findAll()).thenReturn(List.of());
         NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.getOrders();});
         assertEquals("No orders found.", raisedError.getMessage());
+    }
+
+    @Test
+    public void testGetOrder_WhenValidOrderIdGiven_ThenReturnOrder() {
+        when(orderRepo.findById(any(Long.class))).thenReturn(Optional.of(this.order));
+        when(mapConvertor.orderToOrderDto(any(Order.class))).thenReturn(this.orderDto);
+        long testId = 1L;
+
+
+        ResponseEntity<OrderDto> response = orderService.getOrder(testId);
+        int statusCode = response.getStatusCode().value();
+        OrderDto orderDto = response.getBody();
+
+        assertEquals(200,statusCode);
+        assertEquals(this.orderDto, orderDto);
     }
 
 
