@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.OrderDto;
 import com.bookstore.managementsystem.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class OrderController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<OrderDto>> getOrders() {
+    public ResponseEntity<List<OrderDto>> getOrders() throws NotFoundError {
         return orderService.getOrders();
     }
 

@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.service;
 
 import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.OrderDto;
 import com.bookstore.managementsystem.entity.Order;
 import com.bookstore.managementsystem.repo.OrderRepo;
@@ -39,8 +40,12 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<List<OrderDto>> getOrders() {
+    public ResponseEntity<List<OrderDto>> getOrders() throws NotFoundError{
         List<Order> orders = orderRepo.findAll();
+        if (orders.isEmpty()) {
+            throw new NotFoundError("No orders found.");
+        }
+
         List<OrderDto> orderDtos = orders.stream().map(mapConvertor::orderToOrderDto).toList();
         return ResponseEntity.status(HttpStatus.OK).body(orderDtos);
     }

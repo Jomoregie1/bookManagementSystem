@@ -75,7 +75,7 @@ class OrderServiceTest {
     }
 
     @Test
-    public void testGetOrder_WhenOrdersPresentInTheData_ThenReturnAListOfOrders() {
+    public void testGetOrder_WhenOrdersPresentInTheData_ThenReturnAListOfOrders() throws NotFoundError{
         when(orderRepo.findAll()).thenReturn(List.of(this.order,this.order,this.order));
         when(mapConvertor.orderToOrderDto(any(Order.class))).thenReturn(this.orderDto);
 
@@ -89,7 +89,7 @@ class OrderServiceTest {
     }
 
     @Test
-    public void testGetOrder_WhenListOfOrdersIsEmpty_ThenReturnNotFoundError() {
+    public void testGetOrder_WhenListOfOrdersIsEmpty_ThenReturnNotFoundError(){
         when(orderRepo.findAll()).thenReturn(List.of());
         NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.getOrders();});
         assertEquals("No orders found.", raisedError.getMessage());
