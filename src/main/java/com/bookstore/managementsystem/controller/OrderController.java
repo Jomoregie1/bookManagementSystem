@@ -42,7 +42,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long id) throws NotFoundError {
         return orderService.deleteOrder(id);
     }
 }

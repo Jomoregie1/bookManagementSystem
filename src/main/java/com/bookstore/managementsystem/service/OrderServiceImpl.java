@@ -74,8 +74,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<Void> deleteOrder(Long id) {
+    public ResponseEntity<Void> deleteOrder(Long id) throws NotFoundError {
         boolean exists = orderRepo.existsById(id);
+        if(!exists) {
+            throw new NotFoundError("No orders found.");
+        }
         orderRepo.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

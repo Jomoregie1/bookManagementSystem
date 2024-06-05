@@ -18,5 +18,5 @@ public interface OrderService {
 
     ResponseEntity<Void> updateOrder(Long id, OrderDto orderDto) throws NotFoundError;
 
-    ResponseEntity<Void> deleteOrder(Long id);
+    ResponseEntity<Void> deleteOrder(Long id) throws NotFoundError;
 }
