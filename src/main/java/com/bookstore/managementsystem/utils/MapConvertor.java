@@ -1,8 +1,10 @@
 package com.bookstore.managementsystem.utils;
 import com.bookstore.managementsystem.dto.AuthorDto;
 import com.bookstore.managementsystem.dto.BookDto;
+import com.bookstore.managementsystem.dto.OrderDto;
 import com.bookstore.managementsystem.entity.Author;
 import com.bookstore.managementsystem.entity.Book;
+import com.bookstore.managementsystem.entity.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -24,5 +26,9 @@ public interface MapConvertor {
     AuthorDto authorToAuthorDto(Author author);
 
     Author authorDtoToAuthor(AuthorDto authorDto);
+
+    OrderDto orderToOrderDto(Order order);
+
+    Order orderDtoToOrder(OrderDto orderDto);
 
 }
