@@ -63,8 +63,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<Void> updateOrder(Long id, OrderDto orderDto) {
+    public ResponseEntity<Void> updateOrder(Long id, OrderDto orderDto) throws NotFoundError{
         Optional<Order> order = orderRepo.findById(id);
+        if (order.isEmpty()) {
+            throw new NotFoundError("No orders found.");
+        }
         Order newOrder = mapConvertor.orderDtoToOrder(orderDto);
 
         return ResponseEntity.status(HttpStatus.OK).build();
