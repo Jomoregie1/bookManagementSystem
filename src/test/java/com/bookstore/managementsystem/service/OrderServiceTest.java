@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 
@@ -46,7 +48,17 @@ class OrderServiceTest {
     }
 
     @Test
-    public void testCreateOrder_whenValidOrderPassed_Then
+    public void testCreateOrder_whenValidOrderPassed_ThenReturn201() {
+        when(mapConvertor.orderDtoToOrder(any(OrderDto.class))).thenReturn(this.order);
+
+        ResponseEntity<OrderDto> orderDtoResponseEntity = orderService.createOrder(this.orderDto);
+        int statusCode = orderDtoResponseEntity.getStatusCode().value();
+        OrderDto orderDtoResponse = orderDtoResponseEntity.getBody();
+
+        assertEquals(201, statusCode);
+        assertEquals(orderDtoResponse, this.orderDto);
+
+    }
 
 
 
