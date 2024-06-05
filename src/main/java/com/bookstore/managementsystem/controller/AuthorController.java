@@ -44,7 +44,7 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthorById(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteAuthorById(@PathVariable("id") Long id) throws NotFoundError{
         return this.authorService.deleteAuthorById(id);
     }
 

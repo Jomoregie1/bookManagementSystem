@@ -146,7 +146,7 @@ class AuthorServiceTest {
     }
 
     @Test
-    public void testDeletedAuthorById_WhenAuthorIsPresent_ThenReturn200() {
+    public void testDeletedAuthorById_WhenAuthorIsPresent_ThenReturn200() throws NotFoundError {
         when(authorRepo.existsById(any(Long.class))).thenReturn(true);
         long testId = 1L;
 
@@ -157,7 +157,7 @@ class AuthorServiceTest {
     }
 
     @Test
-    public void testDeleteAuthorById_WhenAuthorIsNotPresent_ThenThrowNotFoundException() {
+    public void testDeleteAuthorById_WhenAuthorIsNotPresent_ThenThrowNotFoundException() throws NotFoundError{
         when(authorRepo.existsById(any(Long.class))).thenReturn(false);
         long testId = 1L;
 
