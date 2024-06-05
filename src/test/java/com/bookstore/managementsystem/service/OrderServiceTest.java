@@ -120,5 +120,18 @@ class OrderServiceTest {
 
     }
 
+    @Test
+    public void testUpdateOrder_WhenValidIdProvided_ThenReturn200() {
+        when(orderRepo.findById(any(Long.class))).thenReturn(Optional.of(this.order));
+        when(mapConvertor.orderDtoToOrder(any(OrderDto.class))).thenReturn(this.order);
+        long testId = 1L;
+
+
+        ResponseEntity<Void> response = orderService.updateOrder(testId, this.orderDto);
+        int statusCode = response.getStatusCode().value();
+
+        assertEquals(200,statusCode);
+    }
+
 
 }
