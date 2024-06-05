@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.handler;
 
 import com.bookstore.managementsystem.customerrors.AlreadyExistsError;
+import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
@@ -30,5 +31,15 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDto);
+    }
+
+    @ExceptionHandler(DatabaseAccessError.class)
+    public ResponseEntity<ErrorDto> databaseAccessError (DatabaseAccessError databaseAccessError) {
+        ErrorDto errorDto = ErrorDto.builder()
+                .statusCode(HttpStatus.GATEWAY_TIMEOUT)
+                .message(databaseAccessError.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(errorDto);
     }
 }
