@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 
@@ -111,6 +110,15 @@ class OrderServiceTest {
         assertEquals(this.orderDto, orderDto);
     }
 
+    @Test
+    public void testGetOrder_WhenInvalidOrderIdIsGiven_ThenThrowNotFoundError(){
+        when(orderRepo.findById(any(Long.class))).thenReturn(Optional.empty());
+        long testId = 1L;
+
+        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.getOrder(testId);});
+        assertEquals("No orders found.", raisedError.getMessage());
+        
+    }
 
 
 }
