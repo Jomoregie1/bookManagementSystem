@@ -14,7 +14,7 @@ public interface OrderService {
 
     ResponseEntity<List<OrderDto>> getOrders() throws NotFoundError;
 
-    ResponseEntity<OrderDto> getOrder(Long id);
+    ResponseEntity<OrderDto> getOrder(Long id) throws NotFoundError;
 
     ResponseEntity<Void> updateOrder(Long id, OrderDto orderDto);
 

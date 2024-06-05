@@ -32,7 +32,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") Long id) {
+    public ResponseEntity<OrderDto> getOrder(@PathVariable("id") Long id) throws NotFoundError {
         return orderService.getOrder(id);
     }
 

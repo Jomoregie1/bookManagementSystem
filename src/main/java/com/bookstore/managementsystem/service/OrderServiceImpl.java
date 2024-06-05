@@ -52,8 +52,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<OrderDto> getOrder(Long id) {
+    public ResponseEntity<OrderDto> getOrder(Long id) throws NotFoundError {
         Optional<Order> order = orderRepo.findById(id);
+        if (order.isEmpty()) {
+            throw new NotFoundError("No orders found.");
+        }
         OrderDto orderDto = order.map(mapConvertor::orderToOrderDto).get();
 
         return ResponseEntity.status(HttpStatus.OK).body(orderDto);

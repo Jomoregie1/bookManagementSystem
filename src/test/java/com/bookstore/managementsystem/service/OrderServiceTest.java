@@ -96,7 +96,7 @@ class OrderServiceTest {
     }
 
     @Test
-    public void testGetOrder_WhenValidOrderIdGiven_ThenReturnOrder() {
+    public void testGetOrder_WhenValidOrderIdGiven_ThenReturnOrder() throws NotFoundError{
         when(orderRepo.findById(any(Long.class))).thenReturn(Optional.of(this.order));
         when(mapConvertor.orderToOrderDto(any(Order.class))).thenReturn(this.orderDto);
         long testId = 1L;
@@ -117,7 +117,7 @@ class OrderServiceTest {
 
         NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.getOrder(testId);});
         assertEquals("No orders found.", raisedError.getMessage());
-        
+
     }
 
 
