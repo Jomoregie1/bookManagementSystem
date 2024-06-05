@@ -64,7 +64,10 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseEntity<Void> updateOrder(Long id, OrderDto orderDto) {
-        return null;
+        Optional<Order> order = orderRepo.findById(id);
+        Order newOrder = mapConvertor.orderDtoToOrder(orderDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Override
