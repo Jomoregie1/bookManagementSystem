@@ -1,6 +1,7 @@
 package com.bookstore.managementsystem.service;
 
 import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
+import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.OrderDto;
 import com.bookstore.managementsystem.entity.Order;
 import com.bookstore.managementsystem.repo.OrderRepo;
@@ -87,7 +88,12 @@ class OrderServiceTest {
         assertEquals(this.orderDto, orders.get(0));
     }
 
-
+    @Test
+    public void testGetOrder_WhenListOfOrdersIsEmpty_ThenReturnNotFoundError() {
+        when(orderRepo.findAll()).thenReturn(List.of());
+        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.getOrders();});
+        assertEquals("No orders found.", raisedError.getMessage());
+    }
 
 
 
