@@ -40,7 +40,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseEntity<List<OrderDto>> getOrders() {
-        return null;
+        List<Order> orders = orderRepo.findAll();
+        List<OrderDto> orderDtos = orders.stream().map(mapConvertor::orderToOrderDto).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(orderDtos);
     }
 
     @Override
