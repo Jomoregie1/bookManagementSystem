@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    ResponseEntity<Void> createOrder(OrderDto orderDto);
+    ResponseEntity<OrderDto> createOrder(OrderDto orderDto);
 
     ResponseEntity<List<OrderDto>> getOrders();
 
