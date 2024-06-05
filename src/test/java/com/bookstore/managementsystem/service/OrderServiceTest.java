@@ -154,5 +154,14 @@ class OrderServiceTest {
         assertEquals(200, statusCode);
     }
 
+    @Test
+    public void testDeleteOrder_WhenInvalidIdProvided_ThenThrowNotFoundError() {
+        when(orderRepo.existsById(any(Long.class))).thenReturn(false);
+        long testId = 1L;
+        
+        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.deleteOrder(testId);});
+        assertEquals("No orders found.", raisedError.getMessage());
+    }
+
 
 }

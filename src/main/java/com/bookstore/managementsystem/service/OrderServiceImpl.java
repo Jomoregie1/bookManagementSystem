@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public ResponseEntity<Void> deleteOrder(Long id) {
         boolean exists = orderRepo.existsById(id);
-
+        orderRepo.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
