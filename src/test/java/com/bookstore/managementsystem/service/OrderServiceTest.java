@@ -133,5 +133,14 @@ class OrderServiceTest {
         assertEquals(200,statusCode);
     }
 
+    @Test
+    public void testUpdateOrder_WhenInvalidIdProvided_ThenThrowNotFoundError(){
+        when(orderRepo.findById(any(Long.class))).thenReturn(Optional.empty());
+        long testId = 1L;
+
+        NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.updateOrder(testId, this.orderDto);});
+        assertEquals("No orders found.", raisedError.getMessage());
+    }
+
 
 }
