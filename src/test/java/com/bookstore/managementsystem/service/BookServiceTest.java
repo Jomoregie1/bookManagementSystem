@@ -19,8 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,9 +47,12 @@ class BookServiceTest {
     @BeforeEach
     void setUp() {
 
+        Set<Book> books = new HashSet<>();
+
         this.author = Author.builder()
                 .id(1L)
                 .name("J.K.Rowling")
+                .books(books)
                 .build();
 
 
@@ -76,8 +81,7 @@ class BookServiceTest {
         // Arrange
         when(mapConvertor.bookDtoToBook(any(BookDto.class)))
                 .thenReturn(this.book);
-        when(bookRepo.save(any(Book.class)))
-                .thenReturn(book);
+        when(bookRepo.countByIsbn(any(Long.class))).thenReturn(0L);
         when(authorRepo.findAuthorByName(any(String.class))).thenReturn(Optional.of(this.author));
 
         //Act

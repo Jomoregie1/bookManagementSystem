@@ -14,6 +14,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -95,12 +97,15 @@ public class OrderServiceImpl implements OrderService{
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @Transactional
     @Override
     public ResponseEntity<Void> deleteOrder(Long id) throws NotFoundError {
-        boolean exists = orderRepo.existsById(id);
-        if(!exists) {
+        Optional<Order> optionalOrder = orderRepo.findById(id);
+        if(optionalOrder.isEmpty()) {
             throw new NotFoundError("No orders found.");
         }
+        Order order = optionalOrder.get();
+        order.getBooks().forEach(order::removeBook);
         orderRepo.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
