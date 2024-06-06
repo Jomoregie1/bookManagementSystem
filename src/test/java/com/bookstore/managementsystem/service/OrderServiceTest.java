@@ -3,7 +3,9 @@ package com.bookstore.managementsystem.service;
 import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.OrderDto;
+import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.entity.Order;
+import com.bookstore.managementsystem.repo.BookRepo;
 import com.bookstore.managementsystem.repo.OrderRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +19,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,20 +36,29 @@ class OrderServiceTest {
     private OrderRepo orderRepo;
 
     @Mock
+    private BookRepo bookRepo;
+
+    @Mock
     private MapConvertor mapConvertor;
     private OrderDto orderDto;
     private Order order;
 
     @BeforeEach
     void setUp(){
+
+        Set<String> bookTitles = new HashSet<>();
+        Set<Book> books = new HashSet<>();
+
         this.orderDto = OrderDto.builder()
                 .date(LocalDate.of(2024, 11, 15))
                 .totalAmount(10)
+                .bookTitles(bookTitles)
                 .build();
 
         this.order = Order.builder()
                 .orderDate(this.orderDto.getDate())
                 .totalAmount(this.orderDto.getTotalAmount())
+                .books(books)
                 .id(1L)
                 .build();
 
@@ -144,7 +157,7 @@ class OrderServiceTest {
 
     @Test
     public void testDeleteOrder_WhenValidIdProvided_ThenReturn200() throws NotFoundError{
-        when(orderRepo.existsById(any(Long.class))).thenReturn(true);
+        when(orderRepo.findById(any(Long.class))).thenReturn(Optional.of(this.order));
         long testId = 1L;
 
         ResponseEntity<Void> response = orderService.deleteOrder(testId);
@@ -155,7 +168,7 @@ class OrderServiceTest {
 
     @Test
     public void testDeleteOrder_WhenInvalidIdProvided_ThenThrowNotFoundError() {
-        when(orderRepo.existsById(any(Long.class))).thenReturn(false);
+        when(orderRepo.findById(any(Long.class))).thenReturn(Optional.empty());
         long testId = 1L;
 
         NotFoundError raisedError = assertThrows(NotFoundError.class, () -> {orderService.deleteOrder(testId);});
