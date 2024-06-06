@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepo extends JpaRepository<Book, Long> {
@@ -20,6 +21,9 @@ public interface BookRepo extends JpaRepository<Book, Long> {
 
     @Query("SELECT b FROM Book b WHERE price BETWEEN :startPrice AND :endPrice")
     List<Book> findByPriceBetween(@Param("startPrice") double startPrice, @Param("endPrice") double endPrice);
+
+    @Query("SELECT b FROM Book b WHERE title = :title")
+    Optional<Book>findByTitle(@Param("title") String title);
 
 
 }
