@@ -3,7 +3,9 @@ package com.bookstore.managementsystem.service;
 import com.bookstore.managementsystem.customerrors.DatabaseAccessError;
 import com.bookstore.managementsystem.customerrors.NotFoundError;
 import com.bookstore.managementsystem.dto.OrderDto;
+import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.entity.Order;
+import com.bookstore.managementsystem.repo.BookRepo;
 import com.bookstore.managementsystem.repo.OrderRepo;
 import com.bookstore.managementsystem.utils.MapConvertor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,27 +14,46 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Qualifier("OrderService")
 public class OrderServiceImpl implements OrderService{
 
     private OrderRepo orderRepo;
+    private BookRepo bookRepo;
     private MapConvertor mapConvertor;
 
     @Autowired
-    OrderServiceImpl(OrderRepo orderRepo, MapConvertor mapConvertor){
+    OrderServiceImpl(OrderRepo orderRepo, MapConvertor mapConvertor, BookRepo bookRepo){
         this.orderRepo = orderRepo;
         this.mapConvertor = mapConvertor;
+        this.bookRepo = bookRepo;
+
     }
 
     @Override
     public ResponseEntity<OrderDto> createOrder(OrderDto orderDto) throws DatabaseAccessError {
         Order order = mapConvertor.orderDtoToOrder(orderDto);
         try {
+            Set<Book> books = orderDto
+                    .getBookTitles()
+                    .stream()
+                    .map(title -> {
+                        try {
+                            return bookRepo.findByTitle(title)
+                                    .orElseThrow(() -> new NotFoundError("Book with title: " + title + " not found."));
+                        } catch (NotFoundError e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                            .collect(Collectors.toSet());
+
+
+            books.forEach(order::addBook);
             orderRepo.save(order);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderDto);
         } catch (DataAccessException e) {
@@ -69,6 +90,7 @@ public class OrderServiceImpl implements OrderService{
             throw new NotFoundError("No orders found.");
         }
         Order newOrder = mapConvertor.orderDtoToOrder(orderDto);
+        orderRepo.save(newOrder);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
