@@ -23,4 +23,16 @@ public class Author {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Book> books;
 
+    public void addBook(Book book) {
+        this.books.add(book);
+    }
+
+    public void removeBook(Book book) {
+
+        if (book != null) {
+            book.setAuthor(null);
+            books.remove(book);
+        }
+    }
+
 }
