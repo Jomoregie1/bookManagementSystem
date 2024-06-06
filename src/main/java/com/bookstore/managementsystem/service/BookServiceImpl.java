@@ -102,6 +102,14 @@ public class BookServiceImpl implements BookService{
     @Override
     public ResponseEntity<Void> deleteBook(Long id) throws NotFoundError{
         Book book = bookRepo.findById(id).orElseThrow(() -> new NotFoundError("Book with ID: " + id + " has not been found."));
+
+        // TODO need to test that this successfully happens(possibly during integration tests.)
+        Author author = book.getAuthor();
+        if (author != null) {
+            author.removeBook(book);
+            authorRepo.save(author);
+        }
+
         bookRepo.deleteById(id);
         return ResponseEntity.status(200).build();
     }
