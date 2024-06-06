@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -15,4 +16,5 @@ public class OrderDto {
 
     private LocalDate date;
     private double totalAmount;
+    private Set<String> bookTitles;
 }
