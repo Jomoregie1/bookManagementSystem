@@ -56,6 +56,8 @@ public class BookServiceImpl implements BookService{
         Book book = mapper.bookDtoToBook(bookDto);
         book.setAuthor(author);
 
+        author.addBook(book);
+
 
         logMessage = String.format("Book with ISBN - %d, created.", bookDto.getIsbn());
         log.info(logMessage);
