@@ -31,5 +31,15 @@ public class Book {
     @ManyToMany(mappedBy = "books")
     private Set<Order> orders;
 
+    public void addOrder(Order order) {
+        this.orders.add(order);
+        order.getBooks().add(this);
+    }
+
+    public void removeOrder(Order order) {
+        this.orders.remove(order);
+        order.getBooks().remove(this);
+    }
+
 
 }

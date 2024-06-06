@@ -3,12 +3,14 @@ package com.bookstore.managementsystem.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -28,5 +30,16 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     private Set<Book> books;
+
+    public void addBook(Book book) {
+        this.books.add(book);
+        book.getOrders().add(this);
+    }
+
+    public void removeBook(Book book) {
+        this.books.remove(book);
+        book.getOrders().remove(this);
+    }
+
 
 }
