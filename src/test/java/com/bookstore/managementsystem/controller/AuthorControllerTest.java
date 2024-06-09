@@ -4,6 +4,7 @@ import com.bookstore.managementsystem.dto.AuthorDto;
 import com.bookstore.managementsystem.entity.Book;
 import com.bookstore.managementsystem.repo.AuthorRepo;
 import com.bookstore.managementsystem.repo.BookRepo;
+import com.bookstore.managementsystem.repo.OrderRepo;
 import com.bookstore.managementsystem.service.AuthorService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +39,9 @@ class AuthorControllerTest {
 
     @MockBean
     private AuthorRepo authorRepo;
+
+    @MockBean
+    private OrderRepo orderRepo;
 
     @MockBean
     private BookRepo bookRepo;

@@ -2,6 +2,8 @@ package com.bookstore.managementsystem.controller;
 
 import com.bookstore.managementsystem.dto.BookDto;
 import com.bookstore.managementsystem.repo.AuthorRepo;
+import com.bookstore.managementsystem.repo.BookRepo;
+import com.bookstore.managementsystem.repo.OrderRepo;
 import com.bookstore.managementsystem.service.BookService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +15,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +30,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.time.LocalDate;
 import java.util.List;
 
-
 @WebMvcTest(BookController.class)
 class BookControllerTest {
 
@@ -36,6 +39,12 @@ class BookControllerTest {
 
     @MockBean
     private AuthorRepo authorRepo;
+
+    @MockBean
+    private OrderRepo orderRepo;
+
+    @MockBean
+    private BookRepo bookRepo;
 
 
     @Autowired
