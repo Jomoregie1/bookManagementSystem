@@ -11,11 +11,15 @@ import com.bookstore.managementsystem.utils.MapConvertor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Qualifier("BookService")
@@ -67,13 +71,15 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<List<BookDto>> getAllBooks() throws NotFoundError {
-        List<Book> books = bookRepo.findAll();
-        if (books.isEmpty()) {
+    public ResponseEntity<List<BookDto>> getAllBooks(int page, int size) throws NotFoundError {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookRepo.findAll(pageable);
+
+        if (!books.hasContent()) {
             throw new NotFoundError("No Books Found");
         }
 
-        List<BookDto> responseBookDtos = books.stream().map(mapper::bookToBookDto).toList();
+        List<BookDto> responseBookDtos = books.getContent().stream().map(mapper::bookToBookDto).toList();
         return ResponseEntity.status(HttpStatus.OK).body(responseBookDtos);
     }
 
@@ -117,10 +123,11 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<List<BookDto>> getBooksByAuthor(Long id) throws NotFoundError {
-        List<Book> bookList = bookRepo.findAllByAuthor(id);
-        if (bookList.isEmpty()) {
-            throw new NotFoundError("Book with ID: " +id+ " has not been found.");
+    public ResponseEntity<List<BookDto>> getBooksByAuthor(Long id, int page, int size) throws NotFoundError {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Book> bookList = bookRepo.findAllByAuthor(id,pageable);
+        if (!bookList.hasContent()) {
+            throw new NotFoundError("Author with ID: " +id+ " has not been found.");
         }
 
         List<BookDto> bookDtoList = bookList.stream().map(mapper::bookToBookDto).toList();
@@ -129,14 +136,16 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange) throws NotFoundError {
-        List<Book> bookList = bookRepo.findByPriceBetween(startOfRange, endOfRange);
-        if (bookList.isEmpty()) {
+    public ResponseEntity<List<BookDto>> getBookWithInPriceRange(double startOfRange, double endOfRange,
+                                                                 int page, int size) throws NotFoundError {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> bookList = bookRepo.findByPriceBetween(startOfRange, endOfRange,pageable);
+        if (!bookList.hasContent()) {
             throw new NotFoundError("Books with price starting from "
                     +startOfRange+ " and ending at "+endOfRange+", has not been found.");
         }
 
-        List<BookDto> bookDtoList = bookList.stream().map(mapper::bookToBookDto).toList();
+        List<BookDto> bookDtoList = bookList.getContent().stream().map(mapper::bookToBookDto).toList();
         return ResponseEntity.status(HttpStatus.OK).body(bookDtoList);
         }
 }

@@ -27,8 +27,9 @@ public class BookController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<BookDto>> getAllBooks() throws NotFoundError {
-        return bookService.getAllBooks();
+    public ResponseEntity<List<BookDto>> getAllBooks(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size) throws NotFoundError {
+        return bookService.getAllBooks(page,size);
     }
 
     @GetMapping("/{id}")
@@ -37,13 +38,16 @@ public class BookController {
     }
 
     @GetMapping("/author/{id}")
-    public ResponseEntity<List<BookDto>> getBooksByAuthor (@PathVariable("id") Long id) throws NotFoundError {
-        return bookService.getBooksByAuthor(id);
+    public ResponseEntity<List<BookDto>> getBooksByAuthor (@PathVariable("id") Long id, @RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "10") int size) throws NotFoundError {
+        return bookService.getBooksByAuthor(id,page,size);
     }
 
     @GetMapping("/price-range")
-    public ResponseEntity<List<BookDto>> getBooksByPriceRange(@RequestParam double startOfRange, @RequestParam double endOfRange) throws NotFoundError {
-        return bookService.getBookWithInPriceRange(startOfRange,endOfRange);
+    public ResponseEntity<List<BookDto>> getBooksByPriceRange(@RequestParam double startOfRange, @RequestParam double endOfRange,
+                                                              @RequestParam (defaultValue = "0") int page
+            , @RequestParam(defaultValue = "10") int size) throws NotFoundError {
+        return bookService.getBookWithInPriceRange(startOfRange,endOfRange,page,size);
     }
 
     @PutMapping("/{id}")

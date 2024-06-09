@@ -20,6 +20,8 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,9 +53,19 @@ class BookControllerTest {
     private MockMvc mockMvc;
     private BookDto bookDto;
     private ObjectMapper mapper;
+    private Pageable pageable;
+    int testPageSize;
+    int testContentSize;
 
     @BeforeEach
     void setUp() {
+
+        testContentSize = 10;
+        testPageSize = 1;
+
+        this.pageable = PageRequest.of(testPageSize,testContentSize);
+
+
         this.bookDto = BookDto.builder()
                 .isbn(12345678)
                 .title("The best book ever")
@@ -89,10 +101,11 @@ class BookControllerTest {
     public void testGetAllBooks_WhenRequested_ThenReturnOkStatusAndNumberOfElements() throws Exception {
         // Arrange
         List<BookDto> bookList = List.of(this.bookDto, this.bookDto);
-        when(bookService.getAllBooks()).thenReturn(ResponseEntity.status(HttpStatus.OK).body(bookList));
+        when(bookService.getAllBooks(any(Integer.class),any(Integer.class))).thenReturn(ResponseEntity.status(HttpStatus.OK).body(bookList));
 
         // Act
-        var response = mockMvc.perform(get("/books")
+        String url = String.format("/books?page=%d&size=%d",this.testPageSize, this.testContentSize);
+        var response = mockMvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
@@ -157,16 +170,17 @@ class BookControllerTest {
     @DisplayName("Test get Book by Author.")
     public void testGetBookByAuthor_WhenAuthorIdProvided_ThenReturnSuccessAndListOfBooks() throws Exception {
         // Arrange
-        when(bookService.getBooksByAuthor(any(Long.class)))
+        when(bookService.getBooksByAuthor(any(Long.class),any(Integer.class), any(Integer.class)))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(bookDto,bookDto,bookDto)));
         // Act & Assert
+        String url = String.format("/books/author/1?page=%d&size=%d", this.testPageSize,this.testContentSize);
         var response = mockMvc.perform(get("/books/author/1"))
                 .andExpect(status().isOk())
                 .andReturn();
         // Assert
         String responseValue = response.getResponse().getContentAsString();
         List<BookDto> values = mapper.readValue(responseValue, new TypeReference<List<BookDto>>() {});
-        assertEquals(values.size(), 3);
+        assertEquals(3, values.size());
 
     }
 
@@ -174,21 +188,22 @@ class BookControllerTest {
     @DisplayName("Test getting a book with a range.")
     public void testGetBooksWithInAPriceRange_WhenPriceRangeGiven_ThenReturnSuccess() throws Exception {
         // Arrange
-        when(bookService.getBookWithInPriceRange(any(Double.class), any(Double.class)))
+        when(bookService.getBookWithInPriceRange(any(Double.class), any(Double.class), any(Integer.class), any(Integer.class)))
                 .thenReturn(ResponseEntity.status(HttpStatus.OK).body(List.of(bookDto,bookDto)));
         // Example start and end range.
         double startOfRange = 7;
         double endOfRange = 15;
 
         //Act
-        String formattedUrl = String.format("/books/price-range?startOfRange=%f&endOfRange=%f",startOfRange, endOfRange);
+        String formattedUrl = String.format("/books/price-range?startOfRange=%f&endOfRange=%f&page=%d&size=%d"
+                ,startOfRange, endOfRange, this.testPageSize, this.testContentSize);
         var response = mockMvc.perform(get(formattedUrl))
                     .andExpect(status().isOk())
                     .andReturn().getResponse();
 
         // Asset
         List<BookDto> responseValue = mapper.readValue(response.getContentAsString(), new TypeReference<List<BookDto>>() {});
-        assertEquals(responseValue.size(),2);
+        assertEquals(2, responseValue.size());
     }
 
 

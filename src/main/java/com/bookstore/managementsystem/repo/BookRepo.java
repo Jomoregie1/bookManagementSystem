@@ -1,6 +1,8 @@
 package com.bookstore.managementsystem.repo;
 
 import com.bookstore.managementsystem.entity.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,10 +19,10 @@ public interface BookRepo extends JpaRepository<Book, Long> {
     Long countByIsbn(@Param("isbn") long isbn);
 
     @Query("SELECT b FROM Book b WHERE b.author.id = :author_id")
-    List<Book>findAllByAuthor(@Param("author_id") long id);
+    Page<Book> findAllByAuthor(@Param("author_id") long id, Pageable pageable);
 
     @Query("SELECT b FROM Book b WHERE price BETWEEN :startPrice AND :endPrice")
-    List<Book> findByPriceBetween(@Param("startPrice") double startPrice, @Param("endPrice") double endPrice);
+    Page<Book> findByPriceBetween(@Param("startPrice") double startPrice, @Param("endPrice") double endPrice, Pageable pageable);
 
     @Query("SELECT b FROM Book b WHERE title = :title")
     Optional<Book>findByTitle(@Param("title") String title);

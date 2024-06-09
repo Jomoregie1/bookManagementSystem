@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -59,9 +62,10 @@ class BookRepoTest {
 
     @Test
     public void testFindAllByAuthor() {
-        List<Book> booksByAuthor = bookRepo.findAllByAuthor(this.author.getId());
-        assertEquals(booksByAuthor.size(), 1);
-        assertEquals(booksByAuthor.get(0).getIsbn(), this.book.getIsbn());
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Book> booksByAuthor = bookRepo.findAllByAuthor(this.author.getId(), pageable);
+        assertEquals(1, booksByAuthor.getTotalPages());
+        assertEquals(1, booksByAuthor.getTotalElements());
     }
 
     @Test
@@ -69,8 +73,9 @@ class BookRepoTest {
         double lowerBound = 20.5;
         double upperBound = 22.5;
 
-        List<Book> booksBetweenGivenPrice = bookRepo.findByPriceBetween(lowerBound, upperBound);
-        assertEquals(booksBetweenGivenPrice.size(), 1);
-        assertEquals(booksBetweenGivenPrice.get(0).getIsbn(), this.book.getIsbn());
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Book> booksBetweenGivenPrice = bookRepo.findByPriceBetween(lowerBound, upperBound,pageable);
+        assertEquals(1, booksBetweenGivenPrice.getTotalElements());
+        assertEquals(1, booksBetweenGivenPrice.getTotalPages());
     }
 }

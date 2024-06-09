@@ -16,6 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
@@ -43,10 +47,15 @@ class BookServiceTest {
     private BookDto bookDto;
     private Book book;
     private Author author;
+    private Page<Book> pageList;
+    private int pageSize;
+    private int contentSize;
 
     @BeforeEach
     void setUp() {
 
+        this.pageSize = 1;
+        this.contentSize = 10;
         Set<Book> books = new HashSet<>();
 
         this.author = Author.builder()
@@ -73,6 +82,11 @@ class BookServiceTest {
                 .author(this.author)
                 .build();
 
+
+        List<Book> booksList = List.of(book, book, book);
+        this.pageList =  new PageImpl<>(booksList, PageRequest.of(contentSize, pageSize), booksList.size());
+
+
     }
 
     @Test
@@ -86,12 +100,12 @@ class BookServiceTest {
 
         //Act
         ResponseEntity<BookDto> response = bookService.createBook(bookDto);
-        HttpStatusCode statusCode = response.getStatusCode();
-        var responseBody = response.getBody();
+        int statusCode = response.getStatusCode().value();
+        BookDto responseBody = response.getBody();
 
         //Assert
-        assertEquals(responseBody,bookDto);
-        assertEquals(statusCode,HttpStatusCode.valueOf(201));
+        assertEquals(bookDto, responseBody);
+        assertEquals(201, statusCode);
 
     }
 
@@ -113,23 +127,31 @@ class BookServiceTest {
     @Test
     public void testGetAllBooks_ThenReturnAListOfBookDtos() throws NotFoundError {
         //Arrange
-        when(bookRepo.findAll()).thenReturn(List.of(book, book, book));
+        when(bookRepo.findAll(any(Pageable.class))).thenReturn(this.pageList);
         when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(bookDto);
+
         // Act
-        ResponseEntity<List<BookDto>> response = bookService.getAllBooks();
+        ResponseEntity<List<BookDto>> response = bookService.getAllBooks(this.pageSize, this.contentSize);
+
         //Assert
-        int sizeOfResponse = response.getBody().size();
-        assertEquals(sizeOfResponse, 3);
+        int statusCode = response.getStatusCode().value();
+        List<BookDto> bookDtoList = response.getBody();
+
+        assertEquals(200,statusCode);
+        assertEquals(3, bookDtoList.size());
 
     }
 
     @Test
     public void testGetAllBooks_WhenFindAllReturnsEmptyList_ThenThrowNotFoundError() throws NotFoundError{
-        when(bookRepo.findAll()).thenReturn(List.of());
+        // Arrange
+        when(bookRepo.findAll(any(Pageable.class))).thenReturn(Page.empty());
+
+        //Act & Assert
         NotFoundError thrown = assertThrows(NotFoundError.class, () -> {
-            bookService.getAllBooks();
+            bookService.getAllBooks(this.pageSize,this.contentSize);
         });
-        assertEquals(thrown.getMessage(), "No Books Found");
+        assertEquals("No Books Found", thrown.getMessage());
     }
 
     @Test
@@ -139,11 +161,11 @@ class BookServiceTest {
 
         long testId = 1L;
         ResponseEntity<BookDto> response = bookService.getBook(testId);
-        int status = response.getStatusCode().value();
+        int statusCode = response.getStatusCode().value();
         BookDto testBookDto = response.getBody();
 
-        assertEquals(status,200);
-        assertEquals(testBookDto, this.bookDto);
+        assertEquals(200, statusCode);
+        assertEquals(this.bookDto, testBookDto);
 
     }
 
@@ -153,7 +175,7 @@ class BookServiceTest {
 
         long testId = 1L;
         NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBook(testId);});
-        assertEquals(thrown.getMessage(), "The book with Id:1,Not Found.");
+        assertEquals("The book with Id:1,Not Found.", thrown.getMessage());
     }
 
     @Test
@@ -168,8 +190,8 @@ class BookServiceTest {
         int statusCode = response.getStatusCode().value();
         BookDto testBookDto = response.getBody();
 
-        assertEquals(statusCode, 200);
-        assertEquals(testBookDto, bookDto);
+        assertEquals(200,statusCode);
+        assertEquals(this.bookDto, testBookDto);
 
 
     }
@@ -180,7 +202,7 @@ class BookServiceTest {
         Long testId = 1L;
 
         NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.updateBook(testId, bookDto);});
-        assertEquals(thrown.getMessage(),"Book with ID: 1 has not been found.");
+        assertEquals("Book with ID: 1 has not been found.",thrown.getMessage());
     }
 
     @Test
@@ -189,7 +211,7 @@ class BookServiceTest {
         long bookId = 1L;
         ResponseEntity<Void> response = this.bookService.deleteBook(bookId);
         int statusCode = response.getStatusCode().value();
-        assertEquals(statusCode, 200);
+        assertEquals(200, statusCode);
 
     }
 
@@ -198,58 +220,64 @@ class BookServiceTest {
         when(bookRepo.findById(any(Long.class))).thenReturn(Optional.empty());
         long testId = 1L;
         NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.deleteBook(testId);});
-        assertEquals(thrown.getMessage(), "Book with ID: 1 has not been found.");
+        assertEquals("Book with ID: 1 has not been found.",thrown.getMessage());
     }
 
     @Test
     public void testGetBookByAuthor_WhenAuthorIdProvided_ThenReturnAListOfBooks() throws NotFoundError {
-        when(bookRepo.findAllByAuthor(any(Long.class))).thenReturn(List.of(book,book,book));
-        when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(any(BookDto.class));
-
+        when(bookRepo.findAllByAuthor(any(Long.class), any(Pageable.class))).thenReturn(this.pageList);
+        when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(this.bookDto);
         long testAuthorId = 1L;
-        ResponseEntity<List<BookDto>> response = bookService.getBooksByAuthor(testAuthorId);
+
+
+        ResponseEntity<List<BookDto>> response = bookService.getBooksByAuthor(testAuthorId,this.pageSize, this.contentSize);
         int statusCode = response.getStatusCode().value();
         List<BookDto> bookDtoList = response.getBody();
 
-        assertEquals(statusCode,200);
-        assertEquals(bookDtoList.size(), 3);
+        assertEquals(200, statusCode);
+        assertEquals(3, bookDtoList.size());
 
     }
 
 
     @Test
-    public void testGetBookByAuthor_WhenAuthorIdProvidedIsInvalid_ThenThrowNotFoundError() throws NotFoundError {
-        when(bookRepo.findAllByAuthor(any(Long.class))).thenReturn(List.of());
+    public void testGetBookByAuthor_WhenAuthorIdProvidedIsInvalid_ThenThrowNotFoundError() {
+        when(bookRepo.findAllByAuthor(any(Long.class),any(Pageable.class))).thenReturn(Page.empty());
 
         long testAuthorId = 1L;
-        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBooksByAuthor(testAuthorId);});
+        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBooksByAuthor(testAuthorId,
+                this.pageSize, this.contentSize);});
 
-        assertEquals(thrown.getMessage(), "Book with ID: 1 has not been found.");
+        assertEquals("Author with ID: 1 has not been found.",thrown.getMessage());
 
     }
 
     @Test
     public void testGetBookWithInPriceRange_WhenStartPriceAndEndPriceProvided_ThenReturnBooksFound() throws NotFoundError {
-        when(bookRepo.findByPriceBetween(any(Double.class), any(Double.class))).thenReturn(List.of(book,book,book));
+        when(bookRepo.findByPriceBetween(any(Double.class), any(Double.class), any(Pageable.class)))
+                .thenReturn(this.pageList);
         when(mapConvertor.bookToBookDto(any(Book.class))).thenReturn(bookDto);
 
         double startPrice = 10.5;
         double endPrice = 15.5;
-        ResponseEntity<List<BookDto>> response = bookService.getBookWithInPriceRange(startPrice, endPrice);
+        ResponseEntity<List<BookDto>> response = bookService.getBookWithInPriceRange(startPrice, endPrice,
+                this.pageSize, this.contentSize);
+
         int statusCode = response.getStatusCode().value();
         List<BookDto> bookDtoList = response.getBody();
 
         assertEquals(statusCode,200);
-        assertEquals(bookDtoList.size(), 3);
+        assertEquals(bookDtoList.size(),3);
     }
 
     @Test
     public void testGetWithInPriceRange_WhenPriceNotFound_ThenThrowNotFoundException() {
-        when(bookRepo.findByPriceBetween(any(Double.class),any(Double.class))).thenReturn(List.of());
+        when(bookRepo.findByPriceBetween(any(Double.class),any(Double.class), any(Pageable.class))).thenReturn(Page.empty());
 
         double value1 = 10.5;
         double value2 = 15.5;
-        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBookWithInPriceRange(value1, value2);});
+        NotFoundError thrown = assertThrows(NotFoundError.class, () -> {bookService.getBookWithInPriceRange(value1,value2,
+                this.pageSize, this.contentSize);});
         assertEquals(thrown.getMessage(), "Books with price starting from 10.5 and ending at 15.5, has not been found.");
     }
 
